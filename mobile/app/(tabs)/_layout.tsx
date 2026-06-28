@@ -57,6 +57,13 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="importCSV"
+          options={{
+            title: "Import CSV",
+            href: null, // Hide from tab bar
+          }}
+        />
+        <Tabs.Screen
           name="transactionsDetail"
           options={{
             title: "Transactions Detail",

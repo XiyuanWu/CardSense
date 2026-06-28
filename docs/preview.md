@@ -177,6 +177,7 @@ Hidden from the tab bar; reached via buttons or links on main screens.
 | Screen file | Purpose |
 |-------------|---------|
 | `addTransactions.tsx` | Add a transaction |
+| `importCSV.tsx` | Bulk CSV import |
 | `addCards.tsx` | Add a card to wallet |
 | `budget.tsx` | Budget overview |
 
@@ -191,6 +192,10 @@ Hidden from the tab bar; reached via buttons or links on main screens.
 #### 2.7.3 Budget
 
 ![Mobile budget](./images/mobile/2-7-3-budget.png)
+
+#### 2.7.4 Import CSV
+
+![Mobile import CSV](./images/mobile/2-7-4-import-csv.png)
 
 **Other Mobile screens (optional):** `signup`, `addBudget`, `transactionsDetail`, `account`.
 

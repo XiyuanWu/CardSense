@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter, useFocusEffect } from "expo-router";
+import { useRouter, useFocusEffect, Href } from "expo-router";
 import { useState, useCallback } from "react";
 import ButtonSeventy from "@/components/button/buttonSeventy";
 import { getTransactions, TransactionData } from "@/utils/api";
@@ -210,9 +210,15 @@ export default function TransactionsPage() {
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
+          <Pressable
+            style={styles.headerAction}
+            onPress={() => router.push("/(tabs)/importCSV" as Href)}
+          >
+            <Ionicons name="cloud-upload-outline" size={22} color="#000000" />
+          </Pressable>
           <Text style={styles.title}>Transactions</Text>
           <Pressable
-            style={styles.addButton}
+            style={styles.headerAction}
             onPress={() => {
               router.push("/(tabs)/addTransactions");
             }}
@@ -236,6 +242,12 @@ export default function TransactionsPage() {
                 text="Add Transactions"
                 onPress={() => router.push("/(tabs)/addTransactions")}
               />
+              <Pressable
+                style={styles.importLink}
+                onPress={() => router.push("/(tabs)/importCSV" as Href)}
+              >
+                <Text style={styles.importLinkText}>Import from CSV</Text>
+              </Pressable>
             </View>
           </View>
         ) : (
@@ -312,10 +324,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#222222",
     textAlign: "center",
-    marginLeft: 30,
     flex: 1,
   },
-  addButton: {
+  headerAction: {
     width: 40,
     height: 40,
     justifyContent: "center",
@@ -399,6 +410,15 @@ const styles = StyleSheet.create({
     color: "#222222",
     textAlign: "center",
     lineHeight: 28,
+  },
+  importLink: {
+    paddingVertical: 8,
+  },
+  importLinkText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#5E17EB",
+    textAlign: "center",
   },
   addButtonEmpty: {
     backgroundColor: "#5E17EB",

@@ -203,6 +203,69 @@ export async function apiRequest(
   return response;
 }
 
+/** Multipart upload (do not set Content-Type — fetch adds boundary). */
+export async function apiUploadRequest(
+  endpoint: string,
+  formData: FormData,
+): Promise<Response> {
+  const url = `${API_BASE_URL}${endpoint}`;
+
+  if (Platform.OS === "web") {
+    const cookieToken = getCSRFTokenFromCookies();
+    if (cookieToken) csrfToken = cookieToken;
+  }
+
+  if (!csrfToken) {
+    await getCSRFToken();
+    if (Platform.OS === "web") {
+      const cookieToken = getCSRFTokenFromCookies();
+      if (cookieToken) csrfToken = cookieToken;
+    }
+  }
+
+  const headers: Record<string, string> = {};
+  if (csrfToken) headers["X-CSRFToken"] = csrfToken;
+
+  const doFetch = async () => {
+    const controller =
+      typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timeoutMs = 60000;
+    const timeoutId = controller
+      ? setTimeout(() => controller.abort(), timeoutMs)
+      : null;
+
+    try {
+      return await fetch(url, {
+        method: "POST",
+        headers,
+        body: formData,
+        credentials: "include",
+        signal: controller?.signal,
+      });
+    } finally {
+      if (timeoutId) clearTimeout(timeoutId);
+    }
+  };
+
+  let response = await doFetch();
+
+  if (response.status === 403) {
+    csrfToken = null;
+    await getCSRFToken();
+    if (Platform.OS === "web") {
+      const cookieToken = getCSRFTokenFromCookies();
+      if (cookieToken) csrfToken = cookieToken;
+    }
+    if (csrfToken) headers["X-CSRFToken"] = csrfToken;
+    response = await doFetch();
+  }
+
+  const newToken = response.headers.get("X-CSRFToken");
+  if (newToken) csrfToken = newToken;
+
+  return response;
+}
+
 export async function testApiConnection(): Promise<boolean> {
   const healthUrl = `${API_BASE_URL}/accounts/health/`;
   try {

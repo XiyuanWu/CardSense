@@ -100,6 +100,7 @@ Same ideas as Web: monthly spending, rewards, budgets, and shortcuts to add tran
 
 - View transaction history.
 - **Add transaction** — Merchant, amount, category; card recommendation when categories and wallet cards are set up.
+- **Import CSV** — Tap the upload icon on the Transactions screen (or **Import from CSV** when empty). Same columns as Web: `merchant`, `amount`, `category`; optional `card`, `date`, `notes`.
 - Open a transaction for details where available.
 
 ### Cards
@@ -126,7 +127,7 @@ For the best experience, set things up in this order:
 1. **Sign up / log in**
 2. **Add cards** to your wallet (Cards)
 3. **Create a monthly budget** (Budgets)
-4. **Log transactions** manually or via CSV import (Web)
+4. **Log transactions** manually or via CSV import (Web or Mobile)
 5. **Check the dashboard** for spending, alerts, and rewards
 6. **Use Rewards Breakdown** to see which cards earned the most
 
@@ -139,7 +140,7 @@ For the best experience, set things up in this order:
 | Sign up / login | Yes | Yes |
 | Dashboard | Yes | Yes |
 | Add / list transactions | Yes | Yes |
-| CSV import | Yes | No |
+| CSV import | Yes | Yes |
 | Budgets & alerts | Yes | Yes |
 | Card wallet | Yes | Yes |
 | Rewards breakdown | Yes | Via dashboard stats |

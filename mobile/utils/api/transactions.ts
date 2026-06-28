@@ -1,4 +1,4 @@
-import { apiRequest } from "./client";
+import { apiRequest, apiUploadRequest } from "./client";
 import type { ApiResponse } from "./types";
 
 export interface TransactionData {
@@ -198,6 +198,69 @@ export async function deleteTransaction(
       success: true,
       data: json?.data ?? null,
       message: json?.message || "Transaction deleted successfully",
+    };
+  } catch (e: any) {
+    return {
+      success: false,
+      error: { code: "NETWORK_ERROR", message: e?.message || "Network error" },
+    };
+  }
+}
+
+export interface CSVImportRowResult {
+  row: number;
+  status: "imported" | "error";
+  transaction_id?: number;
+  errors?: Record<string, unknown>;
+}
+
+export interface CSVImportData {
+  imported_count: number;
+  failed_count: number;
+  results: CSVImportRowResult[];
+}
+
+export async function importTransactionsCSV(file: {
+  uri: string;
+  name: string;
+  mimeType?: string | null;
+}): Promise<ApiResponse<CSVImportData>> {
+  try {
+    const formData = new FormData();
+    formData.append("file", {
+      uri: file.uri,
+      name: file.name.endsWith(".csv") ? file.name : `${file.name}.csv`,
+      type: file.mimeType || "text/csv",
+    } as unknown as Blob);
+
+    const response = await apiUploadRequest("/transactions/import-csv/", formData);
+    const result = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: {
+          code: response.status === 400 ? "VALIDATION_ERROR" : "API_ERROR",
+          message:
+            result?.error ||
+            result?.message ||
+            result?.detail ||
+            `CSV import failed (${response.status})`,
+          details: result || undefined,
+        },
+      };
+    }
+
+    if (result?.success && result?.data) {
+      return { success: true, data: result.data, message: result.message };
+    }
+
+    return {
+      success: false,
+      error: {
+        code: "INVALID_RESPONSE",
+        message: "Unexpected response format from server",
+      },
     };
   } catch (e: any) {
     return {
