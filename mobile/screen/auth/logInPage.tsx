@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import ButtonFull from "../../components/button/buttonFull";
 import TextInputFull from "../../components/textInput/textInputFull";
+import PasswordInput from "../../components/textInput/passwordInput";
 import { loginUser } from "@/utils/api";
 
 // Storage utility for "Remember me" functionality
@@ -183,11 +184,10 @@ export default function LogInPage() {
             autoCapitalize="none"
           />
           <View style={styles.inputSpacing} />
-          <TextInputFull
+          <PasswordInput
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
           />
         </View>
 

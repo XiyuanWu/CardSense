@@ -51,7 +51,7 @@ const Landing: React.FC = () => {
             CardSense helps you optimize your credit card usage, track spending, 
             and earn maximum rewards on every purchase. Smart recommendations powered by AI.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex justify-center items-center gap-4 flex-wrap">
             <Link
               to="/register"
               className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl inline-block no-underline"

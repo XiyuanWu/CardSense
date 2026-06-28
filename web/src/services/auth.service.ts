@@ -5,6 +5,15 @@ interface AuthApiResponse {
   user: User;
 }
 
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'email' in value &&
+    typeof (value as User).email === 'string'
+  );
+}
+
 class AuthService {
   async login(credentials: LoginCredentials) {
     const response = await apiService.post<AuthApiResponse>('/auth/login/', credentials);
@@ -38,6 +47,23 @@ class AuthService {
       }
     }
     return null;
+  }
+
+  async fetchCurrentUser(): Promise<User | null> {
+    const response = await apiService.get<User>('/auth/me/');
+
+    let user: User | null = null;
+    if (isUser(response)) {
+      user = response;
+    } else if (response.success && response.data) {
+      user = response.data;
+    }
+
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
+    }
+    return this.getCurrentUser();
   }
 
   isAuthenticated(): boolean {

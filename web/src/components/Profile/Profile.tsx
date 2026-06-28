@@ -18,7 +18,7 @@ const Profile: React.FC = () => {
   }, []);
 
   const loadProfile = async () => {
-    const currentUser = authService.getCurrentUser();
+    const currentUser = (await authService.fetchCurrentUser()) || authService.getCurrentUser();
     if (currentUser) {
       setUser(currentUser);
       setFormData({
@@ -27,6 +27,17 @@ const Profile: React.FC = () => {
         email: currentUser.email,
       });
     }
+  };
+
+  const formatMemberDate = (dateValue?: string) => {
+    if (!dateValue) return '—';
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) return '—';
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,33 +91,33 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="page-shell">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
             <p className="mt-2 text-gray-600">Manage your personal information</p>
           </div>
 
-          {/* Profile Card */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-6 py-5 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
-                    {user.first_name[0]}{user.last_name[0]}
+          <div className="page-card">
+            <div className="page-card-header">
+              <div className="profile-header">
+                <div className="profile-header-main">
+                  <div className="profile-avatar-lg">
+                    {user.first_name?.[0] || 'U'}
+                    {user.last_name?.[0] || ''}
                   </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">
+                  <div className="min-w-0">
+                    <h2 className="text-xl font-semibold text-gray-900 truncate">
                       {user.first_name} {user.last_name}
                     </h2>
-                    <p className="text-sm text-gray-500">{user.email}</p>
+                    <p className="text-sm text-gray-500 truncate">{user.email}</p>
                   </div>
                 </div>
                 {!isEditing && (
                   <button
+                    type="button"
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="page-btn page-btn-primary"
                   >
                     Edit Profile
                   </button>
@@ -114,7 +125,7 @@ const Profile: React.FC = () => {
               </div>
             </div>
 
-            <div className="px-6 py-6">
+            <div className="page-card-body">
               {message && (
                 <div
                   className={`mb-4 p-4 rounded-lg ${
@@ -128,109 +139,93 @@ const Profile: React.FC = () => {
               )}
 
               {isEditing ? (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
-                    </label>
+                <form onSubmit={handleSubmit} className="form-stack">
+                  <div className="form-field">
+                    <label htmlFor="first_name">First Name</label>
                     <input
                       type="text"
                       id="first_name"
                       name="first_name"
                       value={formData.first_name}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full"
                       required
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
-                    </label>
+                  <div className="form-field">
+                    <label htmlFor="last_name">Last Name</label>
                     <input
                       type="text"
                       id="last_name"
                       name="last_name"
                       value={formData.last_name}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full"
                       required
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address
-                    </label>
+                  <div className="form-field">
+                    <label htmlFor="email">Email Address</label>
                     <input
                       type="email"
                       id="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full"
                       required
                     />
                   </div>
 
-                  <div className="flex space-x-3 pt-4">
+                  <div className="form-actions">
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="page-btn page-btn-primary flex-1"
                     >
                       {loading ? 'Saving...' : 'Save Changes'}
                     </button>
                     <button
                       type="button"
                       onClick={handleCancel}
-                      className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                      className="page-btn page-btn-secondary flex-1"
                     >
                       Cancel
                     </button>
                   </div>
                 </form>
               ) : (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">First Name</p>
-                      <p className="mt-1 text-base text-gray-900">{user.first_name}</p>
+                <div className="profile-details">
+                  <div className="profile-field-grid">
+                    <div className="profile-detail-field">
+                      <p className="profile-detail-label">First Name</p>
+                      <p className="profile-detail-value">{user.first_name}</p>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Last Name</p>
-                      <p className="mt-1 text-base text-gray-900">{user.last_name}</p>
+                    <div className="profile-detail-field">
+                      <p className="profile-detail-label">Last Name</p>
+                      <p className="profile-detail-value">{user.last_name}</p>
                     </div>
                   </div>
 
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Email Address</p>
-                    <p className="mt-1 text-base text-gray-900">{user.email}</p>
+                  <div className="profile-detail-field">
+                    <p className="profile-detail-label">Email Address</p>
+                    <p className="profile-detail-value">{user.email}</p>
                   </div>
 
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Member Since</p>
-                    <p className="mt-1 text-base text-gray-900">
-                      {new Date(user.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                  <div className="profile-detail-field">
+                    <p className="profile-detail-label">Member Since</p>
+                    <p className="profile-detail-value">
+                      {formatMemberDate(user.date_joined || user.created_at)}
                     </p>
                   </div>
 
                   {user.last_login && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Last Login</p>
-                      <p className="mt-1 text-base text-gray-900">
-                        {new Date(user.last_login).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                    <div className="profile-detail-field">
+                      <p className="profile-detail-label">Last Login</p>
+                      <p className="profile-detail-value">
+                        {formatMemberDate(user.last_login)}
                       </p>
                     </div>
                   )}
