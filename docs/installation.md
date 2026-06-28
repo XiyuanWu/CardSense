@@ -14,14 +14,18 @@ CardSense/
 ├── budgets/          # Budgets & alerts
 ├── cards/            # Card catalog & user wallet
 ├── optimizer/        # Card recommendation engine
+├── analytics_views.py
 ├── manage.py
 ├── requirements.txt
 ├── db.sqlite3        # Local dev database (after migrate)
-├── web/              # React web frontend
-└── mobile/           # Expo mobile frontend
+├── web/              # React web frontend  →  http://localhost:3000
+├── mobile/           # Expo mobile frontend
+└── docs/             # installation, usage, documentation
 ```
 
 Web and mobile both talk to the same backend at `http://localhost:8000/api` in development.
+
+For app responsibilities and folder-level architecture, see [documentation.md §2](./documentation.md#2-project-layout).
 
 ---
 
@@ -161,13 +165,6 @@ The app opens at `http://localhost:3000` (CRA may use another port if 3000 is bu
 2. Web app loads the landing/login page.
 3. You can register or log in (session auth + CSRF).
 
-### 2.5 Other scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Production build → `web/build/` |
-| `npm test` | Run Jest tests |
-
 ---
 
 ## 3. Mobile app (Expo)
@@ -249,6 +246,45 @@ Suggested order: **backend → web and/or mobile**.
 
 ---
 
+## 5. Available scripts
+
+Run backend commands from the **repository root**. Run web/mobile commands from `web/` or `mobile/` respectively.
+
+### 5.1 Backend (`/`)
+
+| Command | Description |
+|---------|-------------|
+| `python manage.py runserver` | Start the Django API (default port 8000) |
+| `python manage.py runserver 0.0.0.0:8000` | Listen on all interfaces (physical device testing) |
+| `python manage.py migrate` | Apply database migrations |
+| `python manage.py createsuperuser` | Create an admin user interactively |
+| `python manage.py test` | Run all backend tests |
+| `python manage.py test accounts cards transactions budgets optimizer` | Run selected app tests |
+| `python manage.py add_default_rewards` | Seed default card / reward catalog (dev) |
+
+Windows shortcut for migrations: `.\migrate.bat`
+
+### 5.2 Web (`web/`)
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Dev server on port 3000 |
+| `npm test` | Run Jest tests (watch mode) |
+| `npm run build` | Production build → `web/build/` |
+
+### 5.3 Mobile (`mobile/`)
+
+| Command | Description |
+|---------|-------------|
+| `npx expo start` | Start Expo dev server |
+| `npx expo start -c` | Start with cleared cache (after env changes) |
+| `npm run android` | Open on Android emulator / device |
+| `npm run ios` | Open on iOS simulator (macOS) |
+| `npm run web` | Run Expo web target |
+| `npx expo install --fix` | Align native deps with Expo SDK (troubleshooting) |
+
+---
+
 ## Troubleshooting
 
 ### Web: network errors / login fails
@@ -296,5 +332,5 @@ If the database is corrupted in dev, you can remove `db.sqlite3` and run `migrat
 ## Next steps
 
 - **[usage.md](./usage.md)** — How to use CardSense (Web & Mobile) after setup
-- **[README.md](./README.md)** — Documentation index
-- Root `Documentation.md` — API and architecture details (more docs will move into `docs/` over time)
+- **[documentation.md](./documentation.md)** — Architecture, data models, REST API
+- **[../README.md](../README.md)** — Project overview and quick start
