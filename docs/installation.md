@@ -333,4 +333,5 @@ If the database is corrupted in dev, you can remove `db.sqlite3` and run `migrat
 
 - **[usage.md](./usage.md)** — How to use CardSense (Web & Mobile) after setup
 - **[documentation.md](./documentation.md)** — Architecture, data models, REST API
+- **[preview.md](./preview.md)** — UI screenshots template (Web & Mobile)
 - **[../README.md](../README.md)** — Project overview and quick start

@@ -97,6 +97,7 @@ Full guides live under [`docs/`](./docs/). Start here instead of duplicating set
 | [docs/installation.md](./docs/installation.md) | Project layout, scripts, env vars, setup, troubleshooting |
 | [docs/usage.md](./docs/usage.md) | Sign up, Web & Mobile workflows, feature walkthrough |
 | [docs/documentation.md](./docs/documentation.md) | Architecture, data models, REST API |
+| [docs/preview.md](./docs/preview.md) | UI screenshots (Web & Mobile); add images under `docs/images/` |
 
 Legacy import reference: [Documentation.md](./Documentation.md) (superseded by `docs/documentation.md`).
 
