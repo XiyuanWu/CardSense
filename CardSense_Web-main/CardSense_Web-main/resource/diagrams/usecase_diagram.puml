@@ -1,0 +1,178 @@
+@startuml CardSense Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "User" as user
+actor "Guest" as guest
+actor "System" as system
+
+rectangle "CardSense Application" {
+  
+  ' ============ Authentication ============
+  package "Authentication" {
+    usecase "Register Account" as UC1
+    usecase "Login" as UC2
+    usecase "Logout" as UC3
+    usecase "Reset Password" as UC4
+    usecase "Update Profile" as UC5
+  }
+  
+  ' ============ Transaction Management ============
+  package "Transaction Management" {
+    usecase "Add Transaction Manually" as UC6
+    usecase "Upload CSV File" as UC7
+    usecase "Edit Transaction" as UC8
+    usecase "Delete Transaction" as UC9
+    usecase "View Transaction History" as UC10
+    usecase "Filter Transactions" as UC11
+    usecase "Validate CSV Format" as UC12
+    usecase "Import Transactions" as UC13
+  }
+  
+  ' ============ Budget Management ============
+  package "Budget Management" {
+    usecase "Create Budget" as UC14
+    usecase "Set Budget Limits" as UC15
+    usecase "View Budget Status" as UC16
+    usecase "Edit Budget" as UC17
+    usecase "Delete Budget" as UC18
+    usecase "View Spending by Category" as UC19
+    usecase "Check Budget Remaining" as UC20
+  }
+  
+  ' ============ Card Management ============
+  package "Credit Card Management" {
+    usecase "Browse Card Database" as UC21
+    usecase "Add Card to Wallet" as UC22
+    usecase "Remove Card from Wallet" as UC23
+    usecase "View Card Details" as UC24
+    usecase "View Card Rewards" as UC25
+    usecase "Set Primary Card" as UC26
+  }
+  
+  ' ============ Reward Optimization ============
+  package "Reward Optimization" {
+    usecase "Get Best Card Recommendation" as UC27
+    usecase "Calculate Potential Rewards" as UC28
+    usecase "View Rewards Earned" as UC29
+    usecase "Compare Cards for Purchase" as UC30
+    usecase "Optimize Card Usage" as UC31
+  }
+  
+  ' ============ Alerts & Notifications ============
+  package "Alerts & Notifications" {
+    usecase "Receive Budget Alerts" as UC32
+    usecase "Configure Alert Thresholds" as UC33
+    usecase "View Notifications" as UC34
+    usecase "Dismiss Alerts" as UC35
+    usecase "Set Notification Preferences" as UC36
+  }
+  
+  ' ============ Recommendations ============
+  package "Personalized Recommendations" {
+    usecase "Get Spending Insights" as UC37
+    usecase "Receive Card Suggestions" as UC38
+    usecase "View Optimization Tips" as UC39
+    usecase "Analyze Spending Patterns" as UC40
+  }
+  
+  ' ============ Dashboard & Analytics ============
+  package "Dashboard & Analytics" {
+    usecase "View Dashboard" as UC41
+    usecase "View Spending Graphs" as UC42
+    usecase "Generate Reports" as UC43
+    usecase "Export Data" as UC44
+    usecase "Compare Time Periods" as UC45
+  }
+}
+
+' ============ Guest Relationships ============
+guest --> UC1
+
+' ============ User Relationships ============
+
+' Authentication
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+
+' Transaction Management
+user --> UC6
+user --> UC7
+user --> UC8
+user --> UC9
+user --> UC10
+user --> UC11
+
+' Budget Management
+user --> UC14
+user --> UC15
+user --> UC16
+user --> UC17
+user --> UC18
+user --> UC19
+user --> UC20
+
+' Card Management
+user --> UC21
+user --> UC22
+user --> UC23
+user --> UC24
+user --> UC25
+user --> UC26
+
+' Reward Optimization
+user --> UC27
+user --> UC28
+user --> UC29
+user --> UC30
+user --> UC31
+
+' Alerts & Notifications
+user --> UC32
+user --> UC33
+user --> UC34
+user --> UC35
+user --> UC36
+
+' Recommendations
+user --> UC37
+user --> UC38
+user --> UC39
+user --> UC40
+
+' Dashboard & Analytics
+user --> UC41
+user --> UC42
+user --> UC43
+user --> UC44
+user --> UC45
+
+' ============ System Relationships ============
+system --> UC12
+system --> UC13
+system --> UC28
+system --> UC32
+system --> UC37
+system --> UC38
+system --> UC40
+
+' ============ Include Relationships ============
+UC7 ..> UC12 : <<include>>
+UC7 ..> UC13 : <<include>>
+UC14 ..> UC15 : <<include>>
+UC27 ..> UC28 : <<include>>
+UC16 ..> UC19 : <<include>>
+UC16 ..> UC20 : <<include>>
+UC41 ..> UC42 : <<include>>
+UC31 ..> UC27 : <<include>>
+
+' ============ Extend Relationships ============
+UC32 ..> UC34 : <<extend>>
+UC38 ..> UC39 : <<extend>>
+UC10 ..> UC11 : <<extend>>
+
+@enduml
+
