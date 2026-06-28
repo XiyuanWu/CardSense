@@ -1,0 +1,277 @@
+@startuml CardSense Class Diagram
+
+' ============ User Management ============
+class User {
+  - id: Integer {PK}
+  - email: String {unique}
+  - password_hash: String
+  - first_name: String
+  - last_name: String
+  - created_at: DateTime
+  - last_login: DateTime
+  --
+  + register(): Boolean
+  + login(): Boolean
+  + logout(): void
+  + update_profile(): Boolean
+  + reset_password(): Boolean
+}
+
+class UserProfile {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - phone: String
+  - notification_preferences: JSON
+  - theme_preference: String
+  --
+  + update_preferences(): Boolean
+  + get_settings(): JSON
+}
+
+' ============ Transaction Management ============
+class Transaction {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - amount: Decimal
+  - date: DateTime
+  - category_id: Integer {FK}
+  - card_id: Integer {FK}
+  - merchant: String
+  - notes: String
+  - created_at: DateTime
+  --
+  + create(): Boolean
+  + update(): Boolean
+  + delete(): Boolean
+  + get_by_date_range(): List<Transaction>
+  + get_by_category(): List<Transaction>
+  + calculate_rewards(): Decimal
+}
+
+class TransactionCategory {
+  - id: Integer {PK}
+  - name: String
+  - icon: String
+  - color: String
+  - description: String
+  --
+  + get_all_categories(): List<TransactionCategory>
+  + create_custom_category(): Boolean
+}
+
+class CSVImport {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - filename: String
+  - upload_date: DateTime
+  - status: String
+  - rows_processed: Integer
+  - rows_failed: Integer
+  --
+  + upload_file(): Boolean
+  + validate_format(): Boolean
+  + parse_csv(): List<Transaction>
+  + import_transactions(): Boolean
+  + get_error_report(): List<String>
+}
+
+' ============ Budget Management ============
+class Budget {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - category_id: Integer {FK}
+  - amount: Decimal
+  - period: String
+  - start_date: Date
+  - end_date: Date
+  - alert_threshold: Decimal
+  --
+  + create(): Boolean
+  + update(): Boolean
+  + delete(): Boolean
+  + get_remaining(): Decimal
+  + get_spent_percentage(): Float
+  + is_exceeded(): Boolean
+}
+
+class BudgetAlert {
+  - id: Integer {PK}
+  - budget_id: Integer {FK}
+  - user_id: Integer {FK}
+  - alert_type: String
+  - threshold_percentage: Integer
+  - triggered_at: DateTime
+  - is_read: Boolean
+  --
+  + check_threshold(): Boolean
+  + send_notification(): void
+  + mark_as_read(): void
+}
+
+' ============ Credit Card Management ============
+class CreditCard {
+  - id: Integer {PK}
+  - name: String
+  - issuer: String
+  - annual_fee: Decimal
+  - image_url: String
+  - is_active: Boolean
+  - description: Text
+  --
+  + get_all_cards(): List<CreditCard>
+  + get_card_details(): CreditCard
+  + get_rewards_for_category(): List<RewardRule>
+}
+
+class UserCard {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - card_id: Integer {FK}
+  - nickname: String
+  - added_date: DateTime
+  - is_primary: Boolean
+  --
+  + add_card(): Boolean
+  + remove_card(): Boolean
+  + set_primary(): Boolean
+  + get_user_cards(): List<UserCard>
+}
+
+class RewardRule {
+  - id: Integer {PK}
+  - card_id: Integer {FK}
+  - category_id: Integer {FK}
+  - reward_type: String
+  - reward_value: Decimal
+  - cap_amount: Decimal
+  - cap_period: String
+  - start_date: Date
+  - end_date: Date
+  --
+  + calculate_reward(): Decimal
+  + is_valid(): Boolean
+  + check_cap(): Boolean
+  + get_best_card_for_category(): CreditCard
+}
+
+class RewardTracking {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - card_id: Integer {FK}
+  - transaction_id: Integer {FK}
+  - reward_amount: Decimal
+  - reward_type: String
+  - earned_date: DateTime
+  --
+  + calculate_total_rewards(): Decimal
+  + get_rewards_by_period(): List<RewardTracking>
+  + get_rewards_by_card(): List<RewardTracking>
+}
+
+' ============ Recommendation System ============
+class Recommendation {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - recommendation_type: String
+  - card_id: Integer {FK}
+  - category_id: Integer {FK}
+  - potential_value: Decimal
+  - reason: Text
+  - created_at: DateTime
+  - is_dismissed: Boolean
+  --
+  + generate_recommendations(): List<Recommendation>
+  + analyze_spending_pattern(): JSON
+  + suggest_new_cards(): List<CreditCard>
+  + optimize_current_usage(): List<String>
+}
+
+class Alert {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - alert_type: String
+  - title: String
+  - message: Text
+  - priority: String
+  - created_at: DateTime
+  - is_read: Boolean
+  - action_url: String
+  --
+  + create_alert(): Boolean
+  + mark_as_read(): void
+  + dismiss(): void
+  + get_user_alerts(): List<Alert>
+}
+
+' ============ Analytics & Reporting ============
+class SpendingAnalytics {
+  - id: Integer {PK}
+  - user_id: Integer {FK}
+  - period: String
+  - total_spent: Decimal
+  - total_rewards: Decimal
+  - category_breakdown: JSON
+  - card_usage_stats: JSON
+  - generated_at: DateTime
+  --
+  + generate_report(): SpendingAnalytics
+  + get_spending_trends(): JSON
+  + compare_periods(): JSON
+  + export_to_pdf(): File
+}
+
+class Dashboard {
+  - user_id: Integer {FK}
+  --
+  + get_summary(): JSON
+  + get_recent_transactions(): List<Transaction>
+  + get_budget_status(): List<Budget>
+  + get_top_cards(): List<CreditCard>
+  + get_monthly_comparison(): JSON
+}
+
+' ============ Relationships ============
+
+' User relationships
+User "1" -- "1" UserProfile
+User "1" -- "*" Transaction
+User "1" -- "*" Budget
+User "1" -- "*" UserCard
+User "1" -- "*" Alert
+User "1" -- "*" Recommendation
+User "1" -- "*" CSVImport
+User "1" -- "*" RewardTracking
+User "1" -- "1" Dashboard
+
+' Transaction relationships
+Transaction "*" -- "1" TransactionCategory
+Transaction "*" -- "1" CreditCard
+Transaction "1" -- "0..1" RewardTracking
+
+' Budget relationships
+Budget "*" -- "1" TransactionCategory
+Budget "1" -- "*" BudgetAlert
+
+' Credit Card relationships
+CreditCard "1" -- "*" UserCard
+CreditCard "1" -- "*" RewardRule
+CreditCard "1" -- "*" RewardTracking
+CreditCard "*" -- "1" Recommendation
+
+' Reward relationships
+RewardRule "*" -- "1" TransactionCategory
+
+' Category relationships
+TransactionCategory "1" -- "*" Budget
+TransactionCategory "1" -- "*" RewardRule
+TransactionCategory "*" -- "0..1" Recommendation
+
+' Alert relationships
+BudgetAlert "*" -- "1" Budget
+BudgetAlert --|> Alert : extends
+
+' Analytics
+SpendingAnalytics "*" -- "1" User
+
+@enduml
+
