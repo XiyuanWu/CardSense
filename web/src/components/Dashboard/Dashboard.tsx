@@ -117,15 +117,16 @@ const Dashboard: React.FC = () => {
 
         <div className="dashboard-section-grid mb-6">
           <div className="dashboard-card">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Budget Status</h2>
+            <div className="dashboard-card-header">
+              <h2 className="dashboard-card-title">Budget Status</h2>
               <Link to="/budgets" className="text-brand hover:text-brand text-sm font-semibold">
                 View all →
               </Link>
             </div>
-            <div className="space-y-4">
+            <div>
               {data?.budget_status && data.budget_status.length > 0 ? (
-                data.budget_status.slice(0, 5).map((budget) => (
+                <div className="space-y-4">
+                  {data.budget_status.slice(0, 5).map((budget) => (
                   <div key={budget.id}>
                     <div className="flex justify-between items-center mb-2 gap-4">
                       <span className="text-sm font-semibold text-gray-900 truncate min-w-0">
@@ -151,13 +152,14 @@ const Dashboard: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                ))
+                  ))}
+                </div>
               ) : (
-                <div className="text-center py-6 text-gray-500">
-                  <p className="text-sm">No budget set for this month</p>
+                <div className="dashboard-empty">
+                  <p>No budget set for this month</p>
                   <Link
                     to="/budgets/create"
-                    className="text-brand text-sm font-semibold mt-2 inline-block"
+                    className="text-brand text-sm font-semibold inline-block"
                   >
                     Create a Budget →
                   </Link>
@@ -167,8 +169,8 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="dashboard-card">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
+            <div className="dashboard-card-header">
+              <h2 className="dashboard-card-title">Recent Transactions</h2>
               <Link
                 to="/transactions"
                 className="text-brand hover:text-brand text-sm font-semibold"
@@ -199,11 +201,11 @@ const Dashboard: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <div className="text-center py-6 text-gray-500">
-                  <p className="text-sm">No transactions yet</p>
+                <div className="dashboard-empty">
+                  <p>No transactions yet</p>
                   <Link
                     to="/transactions/add"
-                    className="text-brand text-sm font-semibold mt-2 inline-block"
+                    className="text-brand text-sm font-semibold inline-block"
                   >
                     Add a Transaction →
                   </Link>
@@ -214,25 +216,27 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="dashboard-card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="dashboard-card-header">
+            <h2 className="dashboard-card-title">Quick Actions</h2>
+          </div>
           <div className="dashboard-quick-grid">
             <Link to="/transactions/add" className="dashboard-quick-action">
-              <div className="text-2xl mb-2">💳</div>
+              <div className="text-2xl mb-1">💳</div>
               <div className="font-semibold text-sm text-gray-900">Add Transaction</div>
             </Link>
 
             <Link to="/transactions/import" className="dashboard-quick-action">
-              <div className="text-2xl mb-2">📊</div>
+              <div className="text-2xl mb-1">📊</div>
               <div className="font-semibold text-sm text-gray-900">Import CSV</div>
             </Link>
 
             <Link to="/budgets/create" className="dashboard-quick-action">
-              <div className="text-2xl mb-2">💰</div>
+              <div className="text-2xl mb-1">💰</div>
               <div className="font-semibold text-sm text-gray-900">Create Budget</div>
             </Link>
 
             <Link to="/cards" className="dashboard-quick-action">
-              <div className="text-2xl mb-2">🎴</div>
+              <div className="text-2xl mb-1">🎴</div>
               <div className="font-semibold text-sm text-gray-900">Manage Cards</div>
             </Link>
           </div>

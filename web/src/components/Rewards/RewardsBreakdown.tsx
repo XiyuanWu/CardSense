@@ -4,6 +4,7 @@ import { cardService } from '../../services/card.service';
 import { transactionService } from '../../services/transaction.service';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { DollarSign, CreditCard, TrendingUp } from 'lucide-react';
+import PageLayout, { PageLoading } from '../Layout/PageLayout';
 
 interface CardReward {
   card_id: number;
@@ -27,7 +28,7 @@ const RewardsBreakdown: React.FC = () => {
       setLoading(true);
       const [rewardsResponse, transactionsResponse] = await Promise.all([
         cardService.getCardRewards(),
-        transactionService.getTransactions()
+        transactionService.getTransactions(),
       ]);
 
       if (rewardsResponse.success && rewardsResponse.data) {
@@ -50,189 +51,148 @@ const RewardsBreakdown: React.FC = () => {
   };
 
   const getTransactionReward = (transaction: any): number => {
-    // Use the actual_reward from the backend API (already calculated correctly with fallback)
     if (transaction.actual_reward !== undefined && transaction.actual_reward !== null) {
       return parseFloat(transaction.actual_reward);
     }
-    // Fallback to 0 if no reward calculated
     return 0;
   };
 
   const formatCategoryName = (category: string) => {
-    return category.split('_').map(word => 
-      word.charAt(0) + word.slice(1).toLowerCase()
-    ).join(' ');
+    return category
+      .split('_')
+      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+      .join(' ');
   };
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'GROCERIES': 'bg-green-100 text-green-800',
-      'DINING': 'bg-orange-100 text-orange-800',
-      'GAS': 'bg-blue-100 text-blue-800',
-      'ONLINE_SHOPPING': 'bg-purple-100 text-purple-800',
-      'ENTERTAINMENT': 'bg-pink-100 text-pink-800',
-      'GENERAL_TRAVEL': 'bg-indigo-100 text-indigo-800',
-      'AIRLINE_TRAVEL': 'bg-cyan-100 text-cyan-800',
-      'HOTEL_TRAVEL': 'bg-teal-100 text-teal-800',
-      'TRANSIT': 'bg-yellow-100 text-yellow-800',
-      'PHARMACY': 'bg-emerald-100 text-emerald-800',
-      'RENT': 'bg-red-100 text-red-800',
-      'SELECTED_CATEGORIES': 'bg-slate-100 text-slate-800',
-      'OTHER': 'bg-gray-100 text-gray-800',
+      GROCERIES: 'bg-green-100 text-green-800',
+      DINING: 'bg-orange-100 text-orange-800',
+      GAS: 'bg-blue-100 text-blue-800',
+      ONLINE_SHOPPING: 'bg-purple-100 text-purple-800',
+      ENTERTAINMENT: 'bg-pink-100 text-pink-800',
+      GENERAL_TRAVEL: 'bg-indigo-100 text-indigo-800',
+      AIRLINE_TRAVEL: 'bg-cyan-100 text-cyan-800',
+      HOTEL_TRAVEL: 'bg-teal-100 text-teal-800',
+      TRANSIT: 'bg-yellow-100 text-yellow-800',
+      PHARMACY: 'bg-emerald-100 text-emerald-800',
+      RENT: 'bg-red-100 text-red-800',
+      SELECTED_CATEGORIES: 'bg-slate-100 text-slate-800',
+      OTHER: 'bg-gray-100 text-gray-800',
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="text-xl text-gray-600">Loading rewards...</div>
-      </div>
-    );
+    return <PageLoading message="Loading rewards..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Rewards Breakdown</h1>
-            <p className="text-gray-600">See how you earned your rewards this month</p>
-          </div>
-          <Link
-            to="/dashboard"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            ← Back to Dashboard
-          </Link>
+    <PageLayout
+      title="Rewards Breakdown"
+      subtitle="See how you earned your rewards this month"
+      maxWidth="6xl"
+    >
+      {error && <div className="page-alert page-alert--error">{error}</div>}
+
+      <div className="page-stat-banner">
+        <div>
+          <p className="page-stat-banner-label">Total Rewards This Month</p>
+          <p className="page-stat-banner-value">{formatCurrency(getTotalRewards())}</p>
+          <p className="page-stat-banner-meta">
+            Based on {transactions.length} transaction
+            {transactions.length !== 1 ? 's' : ''}
+          </p>
         </div>
+        <div className="page-stat-banner-icon">
+          <DollarSign size={28} strokeWidth={2} />
+        </div>
+      </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
+      <div className="page-section">
+        <h2 className="page-section-title">Rewards by Card</h2>
 
-        {/* Total Rewards Card */}
-        <div 
-          className="rounded-lg shadow-xl p-8 mb-8"
-          style={{ backgroundColor: '#16a34a' }}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p style={{ color: '#ffffff', fontSize: '18px', fontWeight: '500', marginBottom: '8px' }}>
-                Total Rewards This Month
-              </p>
-              <h2 style={{ color: '#ffffff', fontSize: '48px', fontWeight: 'bold' }}>
-                {formatCurrency(getTotalRewards())}
-              </h2>
-              <p style={{ color: '#ffffff', fontSize: '16px', marginTop: '8px' }}>
-                Based on {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
-              </p>
-            </div>
-            <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: '24px', borderRadius: '9999px' }}>
-              <DollarSign size={64} style={{ color: '#ffffff' }} strokeWidth={2} />
+        {cardRewards.length === 0 ? (
+          <div className="page-card">
+            <div className="page-empty-state">
+              <div className="page-empty-state-icon">
+                <TrendingUp size={28} />
+              </div>
+              <h3>No rewards yet</h3>
+              <p>Add transactions to start earning rewards!</p>
+              <Link to="/transactions/add" className="page-btn page-btn-primary">
+                Add Transaction
+              </Link>
             </div>
           </div>
-        </div>
-
-        {/* Rewards by Card */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Rewards by Card</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        ) : (
+          <div className="page-reward-grid">
             {cardRewards.map((card) => (
-              <div
-                key={card.card_id}
-                className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold text-gray-900">{card.card_name}</h4>
-                    <p className="text-sm text-gray-600">{card.card_issuer}</p>
+              <div key={card.card_id} className="page-reward-card">
+                <div className="page-reward-card-top">
+                  <div>
+                    <h3 className="page-reward-card-name">{card.card_name}</h3>
+                    <p className="page-reward-card-issuer">{card.card_issuer}</p>
                   </div>
-                  <CreditCard className="text-green-600" size={32} />
+                  <CreditCard className="text-green-600" size={22} />
                 </div>
-                <div className="bg-green-50 rounded-lg p-4">
-                  <p className="text-sm text-green-900 mb-1">Earned This Month</p>
-                  <p className="text-3xl font-bold text-green-600">
+                <div className="page-reward-card-amount">
+                  <span className="page-reward-card-label">Earned This Month</span>
+                  <span className="page-reward-card-value">
                     {formatCurrency(card.rewards_earned)}
-                  </p>
+                  </span>
                 </div>
               </div>
             ))}
           </div>
+        )}
+      </div>
 
-          {cardRewards.length === 0 && (
-            <div className="bg-white rounded-lg shadow p-12 text-center">
-              <TrendingUp size={64} className="mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No rewards yet</h3>
-              <p className="text-gray-600 mb-6">
-                Add transactions to start earning rewards!
-              </p>
-              <Link
-                to="/transactions/add"
-                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                Add Transaction
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Recent Rewarding Transactions */}
-        {transactions.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Recent Transactions with Rewards</h3>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+      {transactions.length > 0 && (
+        <div className="page-section">
+          <h2 className="page-section-title">Recent Transactions with Rewards</h2>
+          <div className="page-card">
+            <div className="page-data-table-wrap">
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                <table>
+                  <thead>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Merchant
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Card
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Category
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Reward
-                      </th>
+                      <th>Date</th>
+                      <th>Merchant</th>
+                      <th>Card</th>
+                      <th>Category</th>
+                      <th style={{ textAlign: 'right' }}>Amount</th>
+                      <th style={{ textAlign: 'right' }}>Reward</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody>
                     {transactions.slice(0, 10).map((transaction) => {
                       const reward = getTransactionReward(transaction);
                       return (
-                        <tr key={transaction.id} className="hover:bg-gray-50 transition">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {formatDate(transaction.created_at)}
+                        <tr key={transaction.id}>
+                          <td>{formatDate(transaction.created_at)}</td>
+                          <td className="font-medium text-gray-900">{transaction.merchant}</td>
+                          <td>
+                            {transaction.card_actually_used_details?.name ||
+                              transaction.recommended_card_details?.name ||
+                              'N/A'}
                           </td>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                            {transaction.merchant}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            {transaction.card_actually_used_details?.name || transaction.recommended_card_details?.name || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getCategoryColor(transaction.category || 'OTHER')}`}>
+                          <td>
+                            <span
+                              className={`px-2 py-1 text-xs font-semibold rounded-full ${getCategoryColor(
+                                transaction.category || 'OTHER'
+                              )}`}
+                            >
                               {formatCategoryName(transaction.category || 'OTHER')}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
+                          <td style={{ textAlign: 'right' }}>
                             {formatCurrency(transaction.amount)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-green-600">
+                          <td
+                            style={{ textAlign: 'right' }}
+                            className="font-semibold text-green-600"
+                          >
                             +{formatCurrency(reward)}
                           </td>
                         </tr>
@@ -242,35 +202,31 @@ const RewardsBreakdown: React.FC = () => {
                 </table>
               </div>
             </div>
-            {transactions.length > 10 && (
-              <div className="mt-4 text-center">
-                <Link
-                  to="/transactions"
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  View All Transactions →
-                </Link>
-              </div>
-            )}
           </div>
-        )}
-
-        {/* Info Box */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="font-semibold text-blue-900 mb-2">How Rewards Are Calculated</h3>
-          <p className="text-sm text-blue-800 mb-3">
-            Your rewards are calculated based on your card's reward rates for each transaction category.
-            For example, if your card offers 6% back on groceries and you spend $100 at a grocery store,
-            you'll earn $6.00 in rewards.
-          </p>
-          <p className="text-sm text-blue-800">
-            <strong>Tip:</strong> Use cards with higher reward rates for specific categories to maximize your earnings!
-          </p>
+          {transactions.length > 10 && (
+            <p className="text-center mt-4">
+              <Link to="/transactions" className="page-link">
+                View All Transactions →
+              </Link>
+            </p>
+          )}
         </div>
+      )}
+
+      <div className="page-info-box">
+        <h3>How Rewards Are Calculated</h3>
+        <p>
+          Your rewards are calculated based on your card&apos;s reward rates for each transaction
+          category. For example, if your card offers 6% back on groceries and you spend $100 at a
+          grocery store, you&apos;ll earn $6.00 in rewards.
+        </p>
+        <p style={{ marginTop: '0.5rem' }}>
+          <strong>Tip:</strong> Use cards with higher reward rates for specific categories to
+          maximize your earnings!
+        </p>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
 export default RewardsBreakdown;
-

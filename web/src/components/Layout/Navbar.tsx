@@ -1,10 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../../services/auth.service';
 import CardIcon from '../icons/CardIcon';
 
+const navItems = [
+  { to: '/dashboard', label: 'Dashboard', match: (path: string) => path === '/dashboard' || path === '/rewards' },
+  { to: '/transactions', label: 'Transactions', match: (path: string) => path.startsWith('/transactions') },
+  { to: '/budgets', label: 'Budgets', match: (path: string) => path.startsWith('/budgets') },
+  { to: '/cards', label: 'Cards', match: (path: string) => path.startsWith('/cards') },
+  { to: '/analytics', label: 'Analytics', match: (path: string) => path.startsWith('/analytics') },
+];
+
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = authService.getCurrentUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -48,36 +57,17 @@ const Navbar: React.FC = () => {
             </Link>
 
             <div className="hidden md:flex ml-10 space-x-8">
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-blue-600"
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/transactions"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600"
-              >
-                Transactions
-              </Link>
-              <Link
-                to="/budgets"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600"
-              >
-                Budgets
-              </Link>
-              <Link
-                to="/cards"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600"
-              >
-                Cards
-              </Link>
-              <Link
-                to="/analytics"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600"
-              >
-                Analytics
-              </Link>
+              {navItems.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`nav-main-link ${
+                    item.match(location.pathname) ? 'nav-main-link--active' : ''
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
 
