@@ -1,5 +1,7 @@
 # \[CardSense\]Project Documentation
 
+> **Note:** The maintained technical documentation lives at **[docs/documentation.md](./docs/documentation.md)** (numbered sections, monorepo layout, current API paths). This file is kept as the original reference from the project import.
+
 This full project documentation provides an overview of the **CardSense** system — a full‑stack web application that helps users manage spending, set budgets, and optimize credit card rewards. It outlines both backend (Django \+ DRF) and frontend (React \+ TypeScript) structures, explains how data flows between them, and lists the REST APIs that connect each part. The project already includes a project‑level **api** module and an **accounts** app for authentication, while additional apps handle transactions, budgets with alerts, card data, and optimization logic.
 
 **Table of Contents**
