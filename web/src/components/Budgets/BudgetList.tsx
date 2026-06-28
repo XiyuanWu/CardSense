@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { budgetService } from '../../services/budget.service';
 import { formatCurrency } from '../../utils/formatters';
 import { TrendingUp, AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
+import PageLayout, { PageLoading } from '../Layout/PageLayout';
 
 interface Budget {
   id: number;
@@ -105,74 +106,51 @@ const BudgetList: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="text-xl text-gray-600">Loading budgets...</div>
-      </div>
-    );
+    return <PageLoading message="Loading budgets..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-5xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Budget Management</h1>
-            <p className="text-gray-600">Track your monthly spending and stay on budget</p>
-          </div>
-          <Link
-            to="/budgets/create"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            Create Budget
-          </Link>
-        </div>
+    <PageLayout
+      title="Budget Management"
+      subtitle="Track your monthly spending and stay on budget"
+      maxWidth="4xl"
+      backTo="/dashboard"
+      actions={
+        <Link to="/budgets/create" className="page-btn page-btn-primary">
+          Create Budget
+        </Link>
+      }
+    >
+      {success && <div className="page-alert page-alert--success">{success}</div>}
+      {error && <div className="page-alert page-alert--error">{error}</div>}
 
-        {/* Success Message */}
-        {success && (
-          <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-            {success}
-          </div>
-        )}
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
-
-        {/* Budgets List */}
-        {budgets.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-16 text-center">
-            <div className="max-w-md mx-auto">
-              <div className="mb-6">
-                <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
-                  <TrendingUp size={48} className="text-blue-600" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">No budgets yet</h3>
-              <p className="text-gray-600 mb-8 text-lg">
-                Create a monthly budget to track your spending and receive alerts
-              </p>
-              <Link
-                to="/budgets/create"
-                className="inline-flex items-center justify-center px-8 py-4 text-white text-lg font-semibold rounded-lg transform hover:scale-105 transition-all shadow-lg bg-blue-600 hover:bg-blue-700"
-              >
-                Create Your First Budget
-              </Link>
+      {budgets.length === 0 ? (
+        <div className="page-card">
+          <div className="page-empty-state">
+            <div className="page-empty-state-icon" style={{ backgroundColor: '#eef2ff', color: '#5e17eb' }}>
+              <TrendingUp size={28} />
             </div>
+            <h3>No budgets yet</h3>
+            <p>Create a monthly budget to track your spending and receive alerts</p>
+            <Link to="/budgets/create" className="page-btn page-btn-primary">
+              Create Your First Budget
+            </Link>
           </div>
-        ) : (
-          <div className="space-y-4">
-            {budgets.map((budget) => (
-              <div
-                key={budget.id}
-                className={`bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition ${
-                  isCurrentMonth(budget.year_month) ? 'border-2 border-blue-500' : ''
-                }`}
-              >
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {budgets.map((budget) => (
+            <div
+              key={budget.id}
+              className={`page-list-item ${
+                isCurrentMonth(budget.year_month) ? 'border-brand' : ''
+              }`}
+              style={
+                isCurrentMonth(budget.year_month)
+                  ? { borderColor: '#5e17eb', borderWidth: '2px' }
+                  : undefined
+              }
+            >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
                     {getStatusIcon(budget.percentage_used)}
@@ -180,7 +158,7 @@ const BudgetList: React.FC = () => {
                       <h3 className="text-xl font-bold text-gray-900">
                         {formatMonthName(budget.year_month)}
                         {isCurrentMonth(budget.year_month) && (
-                          <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded">
+                          <span className="ml-2 text-xs text-white px-2 py-0.5 rounded" style={{ backgroundColor: '#5e17eb' }}>
                             CURRENT
                           </span>
                         )}
@@ -227,29 +205,20 @@ const BudgetList: React.FC = () => {
                     {budget.thresholds.map((t) => `${(t * 100).toFixed(0)}%`).join(', ')}
                   </div>
                   <button
+                    type="button"
                     onClick={() => handleDelete(budget.year_month)}
-                    className="inline-flex items-center px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition text-sm font-medium"
+                    className="page-btn page-btn-danger inline-flex items-center gap-1"
+                    style={{ padding: '0.5rem 0.75rem', fontSize: '0.8125rem' }}
                   >
-                    <Trash2 size={16} className="mr-1" />
+                    <Trash2 size={14} />
                     Delete
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        )}
-
-        {/* Back to Dashboard */}
-        <div className="mt-8 text-center">
-          <Link
-            to="/dashboard"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            ← Back to Dashboard
-          </Link>
-        </div>
-      </div>
-    </div>
+      )}
+    </PageLayout>
   );
 };
 

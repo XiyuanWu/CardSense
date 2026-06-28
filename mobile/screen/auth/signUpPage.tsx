@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import ButtonFull from "../../components/button/buttonFull";
 import TextInputFull from "../../components/textInput/textInputFull";
+import PasswordInput from "../../components/textInput/passwordInput";
 import TextInputHalf from "../../components/textInput/textInputHalf";
 import { registerUser } from "@/utils/api";
 
@@ -170,18 +171,16 @@ export default function SignUpPage() {
             autoCapitalize="none"
           />
           <View style={styles.inputSpacing} />
-          <TextInputFull
+          <PasswordInput
             placeholder="Enter your password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
           />
           <View style={styles.inputSpacing} />
-          <TextInputFull
+          <PasswordInput
             placeholder="Enter your password again"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            secureTextEntry
           />
         </View>
 

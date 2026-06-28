@@ -4,6 +4,7 @@ import { transactionService } from '../../services/transaction.service';
 import type { Transaction } from '../../types';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { Trash2, Calendar, DollarSign, Upload, Plus, CheckCircle, AlertTriangle } from 'lucide-react';
+import PageLayout, { PageLoading } from '../Layout/PageLayout';
 
 const TransactionList: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -79,93 +80,53 @@ const TransactionList: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="text-xl text-gray-600">Loading transactions...</div>
-      </div>
-    );
+    return <PageLoading message="Loading transactions..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">All Transactions</h1>
-            <p className="text-gray-600">View and manage your transaction history</p>
-          </div>
-          <div className="flex space-x-3">
-            <Link
-              to="/transactions/import"
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-            >
-              Import CSV
-            </Link>
-            <Link
-              to="/transactions/add"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            >
-              Add Transaction
-            </Link>
+    <PageLayout
+      title="All Transactions"
+      subtitle="View and manage your transaction history"
+      maxWidth="6xl"
+      actions={
+        <div className="page-header-btn-group">
+          <Link to="/transactions/import" className="page-btn page-btn-secondary">
+            Import CSV
+          </Link>
+          <Link to="/transactions/add" className="page-btn page-btn-primary">
+            Add Transaction
+          </Link>
+        </div>
+      }
+    >
+      {error && <div className="page-alert page-alert--error">{error}</div>}
+
+      {transactions.length === 0 ? (
+        <div className="page-card">
+          <div className="page-empty-state">
+            <div className="page-empty-state-icon" style={{ backgroundColor: '#eef2ff', color: '#5e17eb' }}>
+              <DollarSign size={28} />
+            </div>
+            <h3>No transactions yet</h3>
+            <p>Start tracking your spending by adding transactions or importing from a CSV file</p>
+            <div className="page-header-btn-group" style={{ justifyContent: 'center' }}>
+              <Link to="/transactions/add" className="page-btn page-btn-primary inline-flex items-center gap-2">
+                <Plus size={16} />
+                Add Transaction
+              </Link>
+              <Link to="/transactions/import" className="page-btn page-btn-secondary inline-flex items-center gap-2">
+                <Upload size={16} />
+                Import CSV
+              </Link>
+            </div>
+            <p className="text-sm text-gray-500 mt-6 pt-6 border-t border-gray-200">
+              Tip: You can bulk import transactions using a CSV file to save time
+            </p>
           </div>
         </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
-
-        {/* Transactions List */}
-        {transactions.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-xl p-16 text-center">
-            <div className="max-w-md mx-auto">
-              {/* Icon */}
-              <div className="mb-6">
-                <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
-                  <DollarSign size={48} className="text-blue-600" />
-                </div>
-              </div>
-              
-              {/* Message */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">No transactions yet</h3>
-              <p className="text-gray-600 mb-8 text-lg">
-                Start tracking your spending by adding transactions or importing from a CSV file
-              </p>
-              
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
-                <Link
-                  to="/transactions/add"
-                  className="inline-flex items-center justify-center px-8 py-4 text-white text-lg font-semibold rounded-lg transform hover:scale-105 transition-all shadow-lg"
-                  style={{ backgroundColor: '#2563eb' }}
-                >
-                  <Plus size={20} className="mr-2" />
-                  Add Transaction
-                </Link>
-                <Link
-                  to="/transactions/import"
-                  className="inline-flex items-center justify-center px-8 py-4 text-white text-lg font-semibold rounded-lg transform hover:scale-105 transition-all shadow-lg"
-                  style={{ backgroundColor: '#16a34a' }}
-                >
-                  <Upload size={20} className="mr-2" />
-                  Import CSV
-                </Link>
-              </div>
-              
-              {/* Helper Text */}
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
-                  💡 <span className="font-medium">Tip:</span> You can bulk import transactions using a CSV file to save time
-                </p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="overflow-x-auto">
+      ) : (
+        <div className="page-card">
+          <div className="page-data-table-wrap">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
@@ -304,21 +265,10 @@ const TransactionList: React.FC = () => {
                   </tr>
                 </tfoot>
               </table>
-            </div>
           </div>
-        )}
-
-        {/* Back to Dashboard */}
-        <div className="mt-8 text-center">
-          <Link
-            to="/dashboard"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            ← Back to Dashboard
-          </Link>
         </div>
-      </div>
-    </div>
+      )}
+    </PageLayout>
   );
 };
 

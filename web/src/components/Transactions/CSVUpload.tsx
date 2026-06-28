@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { transactionService } from '../../services/transaction.service';
 import { Upload, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import PageLayout from '../Layout/PageLayout';
 
 interface UploadResult {
   row: number;
@@ -108,44 +109,29 @@ const CSVUpload: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Import Transactions (CSV)</h1>
-            <Link
-              to="/dashboard"
-              className="text-blue-600 hover:text-blue-800 font-medium"
-            >
-              ← Back to Dashboard
-            </Link>
-          </div>
-
-          {/* Instructions */}
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="font-semibold text-blue-900 mb-2">CSV Format Requirements:</h3>
-            <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
-              <li>Required columns: <code className="bg-blue-100 px-1 rounded">merchant</code>, <code className="bg-blue-100 px-1 rounded">amount</code>, <code className="bg-blue-100 px-1 rounded">category</code></li>
-              <li>Optional columns: <code className="bg-blue-100 px-1 rounded">card</code>, <code className="bg-blue-100 px-1 rounded">date</code>, <code className="bg-blue-100 px-1 rounded">notes</code></li>
-              <li>Date format: YYYY-MM-DD (e.g., 2024-11-28) - uses current date if not provided</li>
-              <li>Amount: Positive numbers with up to 2 decimal places</li>
-              <li>Category: Must match one of the available categories (GROCERIES, GAS, DINING, etc.)</li>
-              <li>Card: Can be card ID number or card name (must be in your wallet) - <strong>leave blank to use recommended card</strong></li>
-              <li>File must be UTF-8 encoded</li>
+    <PageLayout
+      title="Import Transactions (CSV)"
+      subtitle="Bulk upload your transaction history from a spreadsheet"
+      maxWidth="4xl"
+    >
+      <div className="page-card">
+        <div className="page-card-body">
+          <div className="page-info-box">
+            <h3>CSV Format Requirements</h3>
+            <ul>
+              <li>Required columns: merchant, amount, category</li>
+              <li>Optional columns: card, date, notes</li>
+              <li>Date format: YYYY-MM-DD — uses current date if not provided</li>
+              <li>Card: leave blank to use the recommended card</li>
             </ul>
-            <button
-              onClick={downloadSampleCSV}
-              className="mt-3 text-sm text-blue-600 hover:text-blue-800 font-medium underline"
-            >
+            <button type="button" onClick={downloadSampleCSV} className="page-link mt-3" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
               Download Sample CSV
             </button>
           </div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-start">
-              <AlertCircle className="mr-2 mt-0.5 flex-shrink-0" size={20} />
+            <div className="page-alert page-alert--error flex items-start gap-2">
+              <AlertCircle className="flex-shrink-0 mt-0.5" size={18} />
               <span>{error}</span>
             </div>
           )}
@@ -158,10 +144,10 @@ const CSVUpload: React.FC = () => {
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-lg p-12 text-center transition ${
+                className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
                   dragActive
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
+                    ? 'border-brand bg-purple-50'
+                    : 'border-gray-300 hover:border-brand'
                 }`}
               >
                 <Upload
@@ -172,7 +158,7 @@ const CSVUpload: React.FC = () => {
                   Drag and drop your CSV file here
                 </p>
                 <p className="text-sm text-gray-500 mb-4">or</p>
-                <label className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition">
+                <label className="page-btn page-btn-primary cursor-pointer">
                   Browse Files
                   <input
                     type="file"
@@ -185,7 +171,7 @@ const CSVUpload: React.FC = () => {
 
               {/* Selected File */}
               {file && (
-                <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="mt-6 p-4 page-list-item">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <FileText className="text-blue-600 mr-3" size={24} />
@@ -205,9 +191,10 @@ const CSVUpload: React.FC = () => {
                   </div>
 
                   <button
+                    type="button"
                     onClick={handleUpload}
                     disabled={uploading}
-                    className="w-full mt-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold"
+                    className="page-btn page-btn-primary w-full mt-4"
                   >
                     {uploading ? 'Uploading...' : 'Upload and Import'}
                   </button>
@@ -281,27 +268,22 @@ const CSVUpload: React.FC = () => {
               )}
 
               {/* Actions */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  onClick={() => setResults(null)}
-                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition font-semibold"
-                >
+              <div className="form-actions">
+                <button type="button" onClick={() => setResults(null)} className="page-btn page-btn-primary">
                   Upload Another File
                 </button>
-                <Link
-                  to="/transactions"
-                  className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition font-semibold text-center"
-                >
+                <Link to="/transactions" className="page-btn page-btn-secondary">
                   View Transactions
                 </Link>
               </div>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Available Categories */}
-        <div className="mt-6 bg-white rounded-lg shadow p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Available Categories:</h3>
+      <div className="page-card mt-4">
+        <div className="page-card-body">
+          <h3 className="page-section-title">Available Categories</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 text-sm">
             {[
               'SELECTED_CATEGORIES',
@@ -318,14 +300,14 @@ const CSVUpload: React.FC = () => {
               'ENTERTAINMENT',
               'OTHER',
             ].map((cat) => (
-              <code key={cat} className="px-2 py-1 bg-gray-100 rounded text-gray-700">
+              <code key={cat} className="px-2 py-1 bg-white rounded text-gray-700 border border-gray-200">
                 {cat}
               </code>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

@@ -15,6 +15,7 @@ import CardManagement from './components/Cards/CardManagement';
 import RewardsBreakdown from './components/Rewards/RewardsBreakdown';
 import Profile from './components/Profile/Profile';
 import Settings from './components/Profile/Settings';
+import PageLayout from './components/Layout/PageLayout';
 
 const App: React.FC = () => {
   return (
@@ -126,10 +127,14 @@ const App: React.FC = () => {
           path="/analytics"
           element={
             <PrivateRoute>
-              <div className="p-8">
-                <h1 className="text-2xl font-bold">Analytics</h1>
-                <p className="text-gray-600 mt-2">Analytics dashboard coming soon...</p>
-              </div>
+              <PageLayout title="Analytics" subtitle="Spending insights and trends">
+                <div className="page-card">
+                  <div className="page-empty-state">
+                    <h3>Coming soon</h3>
+                    <p>Analytics dashboard is under development.</p>
+                  </div>
+                </div>
+              </PageLayout>
             </PrivateRoute>
           }
         />
