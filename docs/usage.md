@@ -115,8 +115,9 @@ Same ideas as Web: monthly spending, rewards, budgets, and shortcuts to add tran
 
 ### Account & settings
 
-- **Account** — Profile information.
-- **Settings** — App options.
+- **Settings** (bottom nav **Account**) — View and **edit profile**: first name, last name, and email (same as Web **Profile**).
+- **Reset password** — Sends a reset link to your email (same as Web **Settings → Security**).
+- **Log out** — Ends your session and returns to the welcome screen.
 
 ---
 
