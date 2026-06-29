@@ -16,6 +16,7 @@ CardSense/
 ├── budgets/          # Budgets & alerts
 ├── cards/            # Card catalog & user wallet
 ├── optimizer/        # Card recommendation engine
+├── chat/             # AI Assistant (Gemini) & chat history
 ├── analytics_views.py
 ├── manage.py
 ├── requirements.txt
@@ -363,6 +364,7 @@ Assistant requires a working **Gemini API key**. It does **not** guess answers o
 | `no_api_key` | Missing `.env` or server not restarted | Set `GEMINI_API_KEY`, restart Django |
 | `gemini_quota` / HTTP 429 | Rate limit or quota exceeded | Wait or check [Google AI Studio](https://aistudio.google.com/) usage |
 | `gemini_invalid_key` | Wrong or revoked key | Create a new key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| `gemini_model` | Retired model name in `.env` | Set `GEMINI_MODEL=gemini-2.5-flash`, restart Django |
 
 ---
 

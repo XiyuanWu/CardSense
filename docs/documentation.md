@@ -29,6 +29,7 @@ CardSense is a personal finance assistant focused on **credit card rewards optim
 - Maintain a wallet of credit cards with reward rules
 - Get card recommendations for a purchase category
 - View dashboard analytics (spending, rewards, optimization stats)
+- Ask an AI Assistant (Google Gemini) about card choices and rewards, using live wallet data
 
 One Django backend serves both the **Web** (React) and **Mobile** (Expo React Native) clients.
 
@@ -74,6 +75,7 @@ CardSense/
 ├── budgets/             # Monthly budgets & alerts
 ├── cards/               # Card catalog, user wallet, reward rules
 ├── optimizer/           # Category selections & optimizer dashboard
+├── chat/                # AI Assistant (Gemini) & persisted chat history
 ├── analytics_views.py   # Dashboard analytics endpoint
 ├── manage.py
 ├── requirements.txt
@@ -94,6 +96,7 @@ Legacy folders (`CardSense_*-main/`) may remain from earlier zip imports; the ac
 | `budgets` | Monthly budget CRUD, current month, history, alerts |
 | `cards` | Global card catalog, user cards, reward rules, benefits, rewards summary |
 | `optimizer` | User category selections for personalized optimizer dashboard |
+| `chat` | Gemini-powered assistant, wallet context, server-side chat history |
 
 ### 2.3 Web frontend (`web/`)
 
@@ -101,7 +104,7 @@ React SPA with routes for Dashboard, Transactions, Budgets, Cards, Analytics, an
 
 ### 2.4 Mobile frontend (`mobile/`)
 
-Expo app using file-based routing under `mobile/app/`. Screens mirror core flows: auth, dashboard, transactions, budgets, cards, settings. API client lives in `mobile/utils/api/`.
+Expo app using file-based routing under `mobile/app/`. Screens mirror core flows: auth, dashboard, transactions, budgets, cards, **Assistant** chat, settings. API client lives in `mobile/utils/api/`.
 
 ---
 
@@ -139,6 +142,7 @@ Both clients call the same REST endpoints. User-scoped data is filtered by the a
 - **Transactions → Budgets**: Creating or updating transactions affects month-to-date spend; budget services evaluate thresholds and may create `BudgetAlertEvent` records (see `budgets/signals.py` and `budgets/services.py`).
 - **Transactions → Cards**: Each transaction can store `card_actually_used` and `recommended_card`; reward calculation uses `RewardRule` on the linked `Card`.
 - **Optimizer**: Uses `UserCategorySelection` plus the user’s active cards and reward rules to build the optimizer dashboard.
+- **Chat**: `POST /api/chat/` loads prior messages from the database (not the client), calls Gemini with wallet + optimizer hints, then persists the exchange. `GET /api/chat/history/` returns up to 100 messages from the last 7 days.
 
 ---
 
@@ -190,6 +194,17 @@ Model methods calculate rewards per card using matching `RewardRule` multipliers
 ### 4.5 Optimizer
 
 **`UserCategorySelection`** — User-selected spending categories (`category_tag` from same choices as transactions). Unique per `(user, category_tag)`.
+
+### 4.6 Chat (`chat.models.ChatMessage`)
+
+| Field | Description |
+|-------|-------------|
+| `user` | Owner |
+| `role` | `user` or `assistant` |
+| `content` | Message text |
+| `created_at` | Timestamp |
+
+One continuous conversation per user (no multi-session model). Old messages are pruned after **7 days**; API returns at most **100** messages. Gemini context uses the **last 10** turns.
 
 ---
 
@@ -277,6 +292,42 @@ Budget creation is idempotent per user/month where implemented in views/services
 
 Implemented in root `analytics_views.py` and wired in `api/urls.py`.
 
+**`GET /analytics/dashboard/` response (`data`)** — highlights:
+
+| Field | Description |
+|-------|-------------|
+| `summary.total_spent_this_month` | MTD spend (user timezone month window) |
+| `summary.total_rewards_this_month` | Rewards earned this month |
+| `summary.active_budgets` | Count of budgets with `year_month >=` current month |
+| `summary.budget_alerts` | Pending `BudgetAlertEvent` count |
+| `budget_status` | Up to **3** active budgets (amount, spent, `percentage_used`, month label) |
+| `recent_transactions` | Up to **3** transactions from the current month |
+
+Budget status uses the same month logic as `/budgets/` (`mtd_spend`, user timezone), not a separate “current month only” lookup.
+
+### 5.8 Chat — prefix `/chat/`
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/chat/history/` | List stored messages for the authenticated user |
+| POST | `/chat/` | Send a message; server loads history from DB, calls Gemini, saves exchange |
+
+**`POST /chat/` body:**
+
+```json
+{ "message": "Best card for groceries?" }
+```
+
+**`POST /chat/` response (`data`):**
+
+| Field | Description |
+|-------|-------------|
+| `reply` | Assistant text (markdown-friendly) |
+| `hints` | Optional optimizer hints inferred from the message |
+| `error_code` | Set when Gemini fails (`no_api_key`, `gemini_quota`, `gemini_invalid_key`, `gemini_model`, etc.) |
+
+Requires `GEMINI_API_KEY` in repo-root `.env`. Model defaults to `gemini-2.5-flash` (`GEMINI_MODEL` env var).
+
 ---
 
 ## 6. Frontends
@@ -296,6 +347,7 @@ Implemented in root `analytics_views.py` and wired in `api/urls.py`.
 | Budgets | Create, list, alerts |
 | Cards | Catalog browse, add to wallet, management |
 | Analytics | Charts / placeholders per current build |
+| Assistant | `FloatingChatWidget`, `ChatPanel`; local cache + server history |
 
 Shared layout: `PageLayout`, `Navbar` with active route highlighting.
 
@@ -303,9 +355,9 @@ Shared layout: `PageLayout`, `Navbar` with active route highlighting.
 
 **Routing**: Expo Router under `mobile/app/` — `(auth)` group for welcome/login/signup; `(tabs)` for main app.
 
-**API layer**: `mobile/utils/api/` — modules for `auth`, `transactions`, `budgets`, `cards`, `dashboard`.
+**API layer**: `mobile/utils/api/` — modules for `auth`, `transactions`, `budgets`, `cards`, `dashboard`, `chat`.
 
-**Parity with Web**: Same backend endpoints; UI is optimized for small screens (tab navigation, native inputs).
+**Parity with Web**: Same backend endpoints; UI is optimized for small screens (five-tab navigation with **Assistant** in the center).
 
 **Configuration**: Optional `EXPO_PUBLIC_API_BASE_URL` for device testing against a LAN IP (documented in installation).
 
@@ -340,6 +392,13 @@ Shared layout: `PageLayout`, `Navbar` with active route highlighting.
 
 - Local Web on port 3000 talks to API on 8000 — ensure `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` in `api/settings.py` include the Web origin for development.
 - Mobile on a physical device needs the API host reachable on the network (not `localhost` on the phone).
+
+### 7.6 AI Assistant (Gemini)
+
+- Backend: `chat/services.py` builds wallet JSON + category hints from `optimizer.services.best_cards_for_category`.
+- No offline fallback when Gemini fails — clients show `error_code` / message from the API.
+- Web keeps a short-lived local cache for instant reopen; **source of truth** is `GET /chat/history/`.
+- Install: `pip install google-generativeai python-dotenv`; configure `.env` (see [installation.md](./installation.md)).
 
 ---
 
@@ -386,6 +445,8 @@ Run after migrations when the catalog is empty.
 |----------|-------|---------|
 | `REACT_APP_API_URL` | `web/.env.development` | API base for Web |
 | `EXPO_PUBLIC_API_BASE_URL` | Mobile env | API base for device testing |
+| `GEMINI_API_KEY` | Repo-root `.env` | Google Gemini API key for Assistant |
+| `GEMINI_MODEL` | Repo-root `.env` | Model id (default `gemini-2.5-flash`) |
 | `DJANGO_SECRET_KEY`, `DEBUG` | Django settings / `.env` | Production hardening |
 
 ---
@@ -400,6 +461,8 @@ Run after migrations when the catalog is empty.
 - CSV import and card recommendation
 - Budget threshold alerts
 - Web secondary pages UI alignment; Mobile TypeScript config fix
+- **AI Assistant** (Google Gemini): Web floating chat, Mobile Assistant tab, server-synced history
+- Dashboard budget status aligned with active budgets API; list caps (3 budgets / 3 transactions on dashboard)
 
 ### 9.2 Planned / future extensions
 
@@ -415,4 +478,4 @@ For user-facing feature descriptions and step-by-step flows, continue to maintai
 
 ---
 
-*Last updated for the CardSense monorepo layout (backend at repository root, `web/`, `mobile/`).*
+*Last updated: monorepo with `chat/` app, Gemini Assistant, and dashboard list limits (Mar 2026).*
