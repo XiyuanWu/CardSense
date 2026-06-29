@@ -7,7 +7,7 @@ Guides for the **CardSense monorepo** (Django API + Web + Mobile).
 | [installation.md](./installation.md) | Clone, install, run backend / web / mobile |
 | [usage.md](./usage.md) | End-user workflows on Web and Mobile |
 | [documentation.md](./documentation.md) | Architecture, models, REST API |
-| [preview.md](./preview.md) | UI screenshot checklist (add files under `docs/images/`) |
+| [preview.md](./preview.md) | UI screenshots (Web & Mobile) |
 
 **Design (external links — open in browser, not embeddable in Markdown):**
 

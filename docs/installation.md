@@ -372,6 +372,6 @@ Assistant requires a working **Gemini API key**. It does **not** guess answers o
 
 - **[usage.md](./usage.md)** — How to use CardSense (Web & Mobile) after setup
 - **[documentation.md](./documentation.md)** — Architecture, data models, REST API
-- **[preview.md](./preview.md)** — UI screenshot checklist (add files under `docs/images/`)
+- **[preview.md](./preview.md)** — UI screenshots (Web & Mobile)
 - **[README.md](./README.md)** — Documentation index
 - **[../README.md](../README.md)** — Project overview, restructure history, Figma link
