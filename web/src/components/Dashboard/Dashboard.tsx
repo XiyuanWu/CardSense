@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
             <div>
               {data?.budget_status && data.budget_status.length > 0 ? (
                 <div className="space-y-4">
-                  {data.budget_status.slice(0, 5).map((budget) => (
+                  {data.budget_status.slice(0, 3).map((budget) => (
                   <div key={budget.id}>
                     <div className="flex justify-between items-center mb-2 gap-4">
                       <span className="text-sm font-semibold text-gray-900 truncate min-w-0">
@@ -182,7 +182,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               {data?.recent_transactions && data.recent_transactions.length > 0 ? (
-                data.recent_transactions.slice(0, 5).map((transaction) => (
+                data.recent_transactions.slice(0, 3).map((transaction) => (
                   <div key={transaction.id} className="dashboard-row">
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-sm text-gray-900 truncate">

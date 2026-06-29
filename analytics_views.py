@@ -71,7 +71,7 @@ class DashboardView(APIView):
         active_budgets = active_budgets_qs.count()
         budget_status = [
             _build_budget_status_item(user, budget)
-            for budget in active_budgets_qs[:5]
+            for budget in active_budgets_qs[:3]
         ]
 
         recent_transactions = (
@@ -79,7 +79,7 @@ class DashboardView(APIView):
                 user=user,
                 created_at__gte=month_start_utc,
             )
-            .order_by("-created_at")[:5]
+            .order_by("-created_at")[:3]
         )
         transactions_data = []
         for t in recent_transactions:
