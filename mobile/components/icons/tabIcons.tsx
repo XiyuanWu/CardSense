@@ -6,32 +6,34 @@ interface TabIconProps {
   color?: string;
 }
 
-/** Credit card mark (matches web CardIcon). */
+/** Credit card mark (matches CardIcon). */
 export function CardsTabIcon({ size = 24, color = "#222222" }: TabIconProps) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Svg width={size} height={size} viewBox="0 0 200 200" fill="none">
       <Path
-        d="M18 4.5L18.8 6.3L20.6 7.1L18.8 7.9L18 9.7L17.2 7.9L15.4 7.1L17.2 6.3L18 4.5Z"
+        d="M170 28L174 36L182 40L174 44L170 52L166 44L158 40L166 36L170 28Z"
         fill={color}
       />
       <Rect
-        x="3"
-        y="7"
-        width="16"
-        height="11"
-        rx="2.5"
+        x="24"
+        y="58"
+        width="132"
+        height="96"
+        rx="14"
         stroke={color}
-        strokeWidth="1.6"
+        strokeWidth="10"
+        fill="none"
       />
-      <Rect x="3" y="10" width="16" height="3" fill={color} />
+      <Rect x="24" y="82" width="132" height="22" fill={color} />
       <Rect
-        x="5"
-        y="14.5"
-        width="5"
-        height="2"
-        rx="0.8"
+        x="36"
+        y="118"
+        width="46"
+        height="18"
+        rx="5"
         stroke={color}
-        strokeWidth="1"
+        strokeWidth="6"
+        fill="none"
       />
     </Svg>
   );

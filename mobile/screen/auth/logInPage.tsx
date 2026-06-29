@@ -2,7 +2,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Pressable,
   ActivityIndicator,
   Platform,
@@ -13,6 +12,7 @@ import { useState, useEffect } from "react";
 import ButtonFull from "../../components/button/buttonFull";
 import TextInputFull from "../../components/textInput/textInputFull";
 import PasswordInput from "../../components/textInput/passwordInput";
+import CardIcon from "../../components/icons/CardIcon";
 import { loginUser } from "@/utils/api";
 
 // Storage utility for "Remember me" functionality
@@ -164,11 +164,7 @@ export default function LogInPage() {
       <View style={styles.content}>
         {/* Logo Section */}
         <View style={styles.logoContainer}>
-          <Image
-            source={require("../../assets/images/CardSense logo.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+          <CardIcon size={100} color="#5E17EB" />
         </View>
 
         {/* Welcome Text */}
@@ -262,10 +258,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-  },
-  logo: {
-    width: 400,
-    height: 250,
+    marginBottom: 24,
   },
   welcomeText: {
     fontSize: 26,

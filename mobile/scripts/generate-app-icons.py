@@ -1,9 +1,9 @@
-"""Generate Expo app icon assets from CardSense logo."""
+"""Generate Expo app icon assets from the CardSense mark (icon only). Mobile only."""
 from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "assets" / "images" / "CardSense logo.png"
+SRC = ROOT / "assets" / "images" / "cardsense-icon.png"
 OUT = ROOT / "assets" / "images"
 
 
@@ -29,6 +29,7 @@ def main() -> None:
     )
     mono = pad_square(logo.convert("L").convert("RGBA"), 432)
     mono.save(OUT / "android-icon-monochrome.png")
+
     print("Generated app icons in", OUT)
 
 
