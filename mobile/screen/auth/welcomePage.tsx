@@ -12,7 +12,7 @@ export default function WelcomeScreen() {
       <View style={styles.content}>
         {/* Logo Section */}
         <View style={styles.logoContainer}>
-          <CardIcon size={120} color="#5E17EB" />
+          <CardIcon size={180} color="#5E17EB" />
           <View style={styles.textContainer}>
             <Text style={styles.titleText}>Maximize Your Credit Card</Text>
             <Text style={[styles.titleText, styles.titleTextPurple]}>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 16,
   },
   titleText: {
     fontSize: 20,

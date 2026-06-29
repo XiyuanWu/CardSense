@@ -164,7 +164,7 @@ export default function LogInPage() {
       <View style={styles.content}>
         {/* Logo Section */}
         <View style={styles.logoContainer}>
-          <CardIcon size={100} color="#5E17EB" />
+          <CardIcon size={180} color="#5E17EB" />
         </View>
 
         {/* Welcome Text */}
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 28,
   },
   welcomeText: {
     fontSize: 26,
