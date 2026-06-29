@@ -30,6 +30,7 @@ Many cardholders pay more interest than they need to, or use the wrong card for 
 | **Budgets** | Create monthly budgets; threshold alerts (50% / 70% / 90%) |
 | **Cards** | Browse catalog, add cards to your wallet, view reward rules |
 | **Optimizer** | Category selections and personalized recommendations |
+| **Assistant** | AI chat (Google Gemini) — card picks, rewards tips, wallet-aware Q&A; history syncs across Web & Mobile |
 | **Analytics** | Dashboard metrics via the shared API |
 
 
@@ -45,7 +46,7 @@ python -m venv .venv
 # macOS/Linux:  source .venv/bin/activate
 
 pip install -r requirements.txt
-pip install djangorestframework django-cors-headers
+pip install djangorestframework django-cors-headers python-dotenv google-generativeai
 
 python manage.py migrate
 python manage.py runserver

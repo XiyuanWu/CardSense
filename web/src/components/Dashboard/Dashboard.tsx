@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { analyticsService } from '../../services/analytics.service';
 import { alertService } from '../../services/alert.service';
 import type { DashboardData, Alert } from '../../types';
-import { Link } from 'react-router-dom';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
-  useEffect(() => {
-    loadDashboard();
-    loadAlerts();
-  }, []);
-
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
     const response = await analyticsService.getDashboard();
     if (response.success && response.data) {
       setData(response.data);
     }
     setLoading(false);
-  };
+  }, []);
 
-  const loadAlerts = async () => {
+  const loadAlerts = useCallback(async () => {
     const response = await alertService.getUnreadAlerts();
     if (response.success && response.data) {
       setAlerts(response.data);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    loadDashboard();
+    loadAlerts();
+  }, [location.pathname, loadDashboard, loadAlerts]);
 
   const getProgressColor = (percentage: number) => {
     if (percentage > 100) return 'bg-red-600';
@@ -126,7 +128,7 @@ const Dashboard: React.FC = () => {
             <div>
               {data?.budget_status && data.budget_status.length > 0 ? (
                 <div className="space-y-4">
-                  {data.budget_status.slice(0, 5).map((budget) => (
+                  {data.budget_status.slice(0, 3).map((budget) => (
                   <div key={budget.id}>
                     <div className="flex justify-between items-center mb-2 gap-4">
                       <span className="text-sm font-semibold text-gray-900 truncate min-w-0">
@@ -180,7 +182,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               {data?.recent_transactions && data.recent_transactions.length > 0 ? (
-                data.recent_transactions.slice(0, 5).map((transaction) => (
+                data.recent_transactions.slice(0, 3).map((transaction) => (
                   <div key={transaction.id} className="dashboard-row">
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-sm text-gray-900 truncate">

@@ -53,7 +53,15 @@ UI screenshots for **CardSense Web** and **Mobile**. Replace the image paths bel
 
 ![Web dashboard](./images/web/1-4-dashboard.png)
 
-*Summary cards: spending, rewards, budgets, alerts, recent transactions, quick actions.*
+*Summary cards: spending, rewards, budgets (up to 3), alerts, recent transactions (up to 3), quick actions. Floating **Assistant** button (bottom-right).*
+
+---
+
+### 1.9 Assistant (Web)
+
+**UI:** Floating chat widget on any authenticated page (not a top-nav route).
+
+![Web assistant chat](./images/web/1-9-assistant.png)
 
 ---
 
@@ -140,7 +148,7 @@ These are opened from the dashboard, nav, or quick actions — not every sub-pag
 
 ### 2.3 Dashboard
 
-**Tab:** Dashboard (bottom nav)
+**Tab:** Dashboard — bottom nav: Dashboard · Transaction · **Assistant** · Cards · Account
 
 ![Mobile dashboard](./images/mobile/2-3-dashboard.png)
 
@@ -154,23 +162,31 @@ These are opened from the dashboard, nav, or quick actions — not every sub-pag
 
 ---
 
-### 2.5 Cards
+### 2.5 Assistant
+
+**Tab:** Assistant (center of bottom nav)
+
+![Mobile assistant](./images/mobile/2-5-assistant.png)
+
+---
+
+### 2.6 Cards
 
 **Tab:** Cards
 
-![Mobile cards](./images/mobile/2-5-cards.png)
+![Mobile cards](./images/mobile/2-6-cards.png)
 
 ---
 
-### 2.6 Settings
+### 2.7 Settings
 
-**Tab:** Settings
+**Tab:** Account (bottom nav)
 
-![Mobile settings](./images/mobile/2-6-settings.png)
+![Mobile settings](./images/mobile/2-7-settings.png)
 
 ---
 
-### 2.7 Secondary screens (selected)
+### 2.8 Secondary screens (selected)
 
 Hidden from the tab bar; reached via buttons or links on main screens.
 
@@ -180,24 +196,31 @@ Hidden from the tab bar; reached via buttons or links on main screens.
 | `importCSV.tsx` | Bulk CSV import |
 | `addCards.tsx` | Add a card to wallet |
 | `budget.tsx` | Budget overview |
+| `rewardsPage.tsx` | Rewards breakdown |
 
-#### 2.7.1 Add transaction
+#### 2.8.1 Add transaction
 
-![Mobile add transaction](./images/mobile/2-7-1-add-transaction.png)
+![Mobile add transaction](./images/mobile/2-8-1-add-transaction.png)
 
-#### 2.7.2 Add card
+#### 2.8.2 Add card
 
-![Mobile add card](./images/mobile/2-7-2-add-card.png)
+![Mobile add card](./images/mobile/2-8-2-add-card.png)
 
-#### 2.7.3 Budget
+#### 2.8.3 Budget
 
-![Mobile budget](./images/mobile/2-7-3-budget.png)
+![Mobile budget](./images/mobile/2-8-3-budget.png)
 
-#### 2.7.4 Import CSV
+#### 2.8.4 Import CSV
 
-![Mobile import CSV](./images/mobile/2-7-4-import-csv.png)
+![Mobile import CSV](./images/mobile/2-8-4-import-csv.png)
 
-**Other Mobile screens (optional):** `signup`, `addBudget`, `transactionsDetail`, `account`.
+#### 2.8.5 Rewards breakdown
+
+**Route:** `/(tabs)/rewards` (from dashboard rewards card → “View breakdown →”)
+
+![Mobile rewards breakdown](./images/mobile/2-8-5-rewards.png)
+
+**Other Mobile screens (optional):** `signup`, `addBudget`, `transactionsDetail`.
 
 ---
 

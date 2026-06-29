@@ -24,6 +24,12 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="chat"
+          options={{
+            title: "Assistant",
+          }}
+        />
+        <Tabs.Screen
           name="cards"
           options={{
             title: "Cards",
@@ -75,6 +81,13 @@ export default function TabLayout() {
           options={{
             title: "Add Cards",
             href: null, // Hide from tab bar
+          }}
+        />
+        <Tabs.Screen
+          name="rewards"
+          options={{
+            title: "Rewards",
+            href: null,
           }}
         />
       </Tabs>

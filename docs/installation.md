@@ -16,6 +16,7 @@ CardSense/
 ├── budgets/          # Budgets & alerts
 ├── cards/            # Card catalog & user wallet
 ├── optimizer/        # Card recommendation engine
+├── chat/             # AI Assistant (Gemini) & chat history
 ├── analytics_views.py
 ├── manage.py
 ├── requirements.txt
@@ -77,12 +78,29 @@ source venv/bin/activate
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-pip install djangorestframework
+pip install djangorestframework django-cors-headers python-dotenv google-generativeai
 ```
 
-> `djangorestframework` is required by the API but may not be listed in `requirements.txt`. Install it if you see `ModuleNotFoundError: No module named 'rest_framework'`.
+> **Extra packages:** `djangorestframework` and `django-cors-headers` are required by the API but may be missing from a minimal `requirements.txt` install. `python-dotenv` loads the repo-root `.env` file; `google-generativeai` powers the **Assistant** chat (`/api/chat/`). Install them if you see `ModuleNotFoundError` for `rest_framework`, `corsheaders`, `dotenv`, or `google.generativeai`.
 
-### 1.3 Apply database migrations
+### 1.3 Environment variables (optional — AI Assistant)
+
+The **Assistant** feature uses **Google Gemini** when configured — **Web:** floating chat button (bottom-right); **Mobile:** **Assistant** tab in the bottom nav. Configure at the **repository root**:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set your key ([Google AI Studio](https://aistudio.google.com/apikey)):
+
+```env
+GEMINI_API_KEY=your-key-here
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+Restart `python manage.py runserver` after changing `.env`. The `.env` file is gitignored; never commit API keys.
+
+### 1.4 Apply database migrations
 
 ```bash
 python manage.py migrate
@@ -94,7 +112,7 @@ On Windows you can also run:
 .\migrate.bat
 ```
 
-### 1.4 Start the API server
+### 1.5 Start the API server
 
 ```bash
 python manage.py runserver
@@ -107,7 +125,7 @@ The API should be available at:
 
 Leave this terminal running while using Web or Mobile.
 
-### 1.5 Django admin (optional)
+### 1.6 Django admin (optional)
 
 Use the Django admin site to manage users, cards, budgets, and other data directly.
 
@@ -328,6 +346,25 @@ python manage.py migrate
 ```
 
 If the database is corrupted in dev, you can remove `db.sqlite3` and run `migrate` again (this **deletes local data**).
+
+### `ModuleNotFoundError: dotenv` or `google.generativeai`
+
+```bash
+pip install python-dotenv google-generativeai
+```
+
+Restart the Django server. Full setup: [§1.2](#12-install-python-dependencies), [§1.3](#13-environment-variables-optional--ai-assistant).
+
+### AI chat errors
+
+Assistant requires a working **Gemini API key**. It does **not** guess answers offline.
+
+| `error_code` / log | Cause | Fix |
+|--------------------|--------|-----|
+| `no_api_key` | Missing `.env` or server not restarted | Set `GEMINI_API_KEY`, restart Django |
+| `gemini_quota` / HTTP 429 | Rate limit or quota exceeded | Wait or check [Google AI Studio](https://aistudio.google.com/) usage |
+| `gemini_invalid_key` | Wrong or revoked key | Create a new key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| `gemini_model` | Retired model name in `.env` | Set `GEMINI_MODEL=gemini-2.5-flash`, restart Django |
 
 ---
 

@@ -169,7 +169,7 @@ const TransactionList: React.FC = () => {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getCategoryColor((transaction as any).category || 'OTHER')}`}>
+                        <span className={`txn-category-pill ${getCategoryColor((transaction as any).category || 'OTHER')}`}>
                           {formatCategoryName((transaction as any).category || 'OTHER')}
                         </span>
                       </td>
@@ -198,46 +198,49 @@ const TransactionList: React.FC = () => {
                           {formatCurrency(typeof transaction.amount === 'string' ? parseFloat(transaction.amount) : transaction.amount)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <td className="px-6 py-4 whitespace-nowrap txn-optimization-cell">
+                        <div className="txn-optimization-content">
                         {(transaction as any).used_optimal_card ? (
-                          <div className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
-                            <CheckCircle size={14} className="mr-1" />
+                          <div className="txn-status-pill bg-green-100 text-green-800">
+                            <CheckCircle size={14} />
                             Optimized
                           </div>
                         ) : !transaction.card_actually_used ? (
-                          <div className="text-sm">
-                            <div className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium mb-1">
-                              <AlertTriangle size={14} className="mr-1" />
+                          <>
+                            <div className="txn-status-pill bg-yellow-100 text-yellow-800">
+                              <AlertTriangle size={14} />
                               No Card Used
                             </div>
                             {transaction.recommended_card_details && Number((transaction as any).missed_reward) > 0 && (
-                              <div className="text-xs text-gray-500">
+                              <div className="txn-optimization-hint">
                                 Could earn ${Number((transaction as any).missed_reward).toFixed(2)} with {transaction.recommended_card_details.name}
                               </div>
                             )}
-                          </div>
+                          </>
                         ) : (transaction as any).missed_reward != null && Number((transaction as any).missed_reward) > 0 ? (
-                          <div className="text-sm">
-                            <div className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium mb-1">
-                              <AlertTriangle size={14} className="mr-1" />
+                          <>
+                            <div className="txn-status-pill bg-red-100 text-red-700">
+                              <AlertTriangle size={14} />
                               Missed ${Number((transaction as any).missed_reward).toFixed(2)}
                             </div>
                             {transaction.recommended_card_details && (
-                              <div className="text-xs text-gray-500">
+                              <div className="txn-optimization-hint">
                                 Should use {transaction.recommended_card_details.name}
                               </div>
                             )}
-                          </div>
+                          </>
                         ) : (
                           <div className="text-xs text-gray-400">—</div>
                         )}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <button
+                          type="button"
                           onClick={() => handleDelete(transaction.id)}
-                          className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
+                          className="txn-delete-btn"
                         >
-                          <Trash2 size={14} className="mr-1" />
+                          <Trash2 size={14} />
                           Delete
                         </button>
                       </td>
@@ -254,8 +257,8 @@ const TransactionList: React.FC = () => {
                         transactions.reduce((sum, t) => sum + (typeof t.amount === 'string' ? parseFloat(t.amount) : t.amount), 0)
                       )}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="text-xs text-gray-600 space-y-1">
+                    <td className="px-6 py-4 text-center txn-optimization-cell">
+                      <div className="txn-footer-stats">
                         <div className="text-green-600">{transactions.filter((t: any) => t.used_optimal_card).length} optimized</div>
                         <div className="text-yellow-600">{transactions.filter((t: any) => !t.card_actually_used).length} no card</div>
                         <div className="text-red-600">{transactions.filter((t: any) => t.card_actually_used && !t.used_optimal_card).length} suboptimal</div>

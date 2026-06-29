@@ -21,6 +21,13 @@ export interface UserCardData {
   card_details?: CardData;
 }
 
+export interface CardRewardItem {
+  card_id: number;
+  card_name: string;
+  card_issuer: string;
+  rewards_earned: number;
+}
+
 export async function getAvailableCards(): Promise<ApiResponse<CardData[]>> {
   try {
     const response = await apiRequest("/cards/cards/", { method: "GET" });
@@ -34,6 +41,43 @@ export async function getAvailableCards(): Promise<ApiResponse<CardData[]>> {
             result?.message ||
             result?.detail ||
             `Failed to fetch cards (${response.status})`,
+          details: result || undefined,
+        },
+      };
+    }
+    if (result?.success && Array.isArray(result.data))
+      return { success: true, data: result.data };
+    if (Array.isArray(result)) return { success: true, data: result };
+    if (Array.isArray(result?.data))
+      return { success: true, data: result.data };
+    return {
+      success: false,
+      error: {
+        code: "INVALID_RESPONSE",
+        message: "Unexpected response format from server",
+      },
+    };
+  } catch (e: any) {
+    return {
+      success: false,
+      error: { code: "NETWORK_ERROR", message: e?.message || "Network error" },
+    };
+  }
+}
+
+export async function getCardRewards(): Promise<ApiResponse<CardRewardItem[]>> {
+  try {
+    const response = await apiRequest("/cards/rewards/", { method: "GET" });
+    const result = await response.json().catch(() => null);
+    if (!response.ok) {
+      return {
+        success: false,
+        error: {
+          code: response.status === 401 ? "UNAUTHORIZED" : "API_ERROR",
+          message:
+            result?.message ||
+            result?.detail ||
+            `Failed to fetch rewards (${response.status})`,
           details: result || undefined,
         },
       };

@@ -35,9 +35,10 @@ The dashboard summarizes your month at a glance:
 | **Rewards Earned** | Total rewards; click to open **Rewards Breakdown** |
 | **Active Budgets** | Number of budgets you have |
 | **Budget Alerts** | Open alerts; click to view **Budget Alerts** |
-| **Budget Status** | Progress toward your monthly budget |
-| **Recent Transactions** | Latest purchases |
+| **Budget Status** | Progress for up to **3** active monthly budgets (current month and upcoming) |
+| **Recent Transactions** | Up to **3** latest purchases this month |
 | **Quick Actions** | Shortcuts to add a transaction, import CSV, create a budget, or manage cards |
+| **Assistant** | Floating chat button (bottom-right) — ask about your cards and rewards (requires `GEMINI_API_KEY`; see [installation.md](./installation.md)) |
 
 ### Transactions
 
@@ -86,11 +87,18 @@ Open your avatar menu (top right):
 
 **Menu → Analytics** — Placeholder in current release; dashboard covers most day-to-day needs.
 
+### Assistant (AI chat)
+
+- **Web:** Purple floating button (bottom-right). Opens a chat panel with suggested prompts (e.g. best card for gas/groceries).
+- Answers use your **wallet data** and Google **Gemini** when `GEMINI_API_KEY` is configured on the backend.
+- **Chat history** is stored on the server (7 days, single conversation per user) and syncs between Web and Mobile for the same account.
+- If the API key is missing or quota is exceeded, the assistant returns a clear error — it does not guess offline.
+
 ---
 
 ## Mobile app (Expo)
 
-Navigation uses a bottom bar: **Dashboard**, **Transactions**, **Cards**, and **Settings**. Budget flows open from the dashboard or dedicated screens.
+Navigation uses a bottom bar: **Dashboard**, **Transactions**, **Assistant** (center), **Cards**, and **Account** (Settings). Budget flows open from the dashboard or dedicated screens.
 
 ### Dashboard
 
@@ -112,6 +120,12 @@ Same ideas as Web: monthly spending, rewards, budgets, and shortcuts to add tran
 
 - View budget progress for the current month.
 - **Add budget** — Set amount and alert thresholds (similar to Web).
+
+### Assistant
+
+- **Assistant** tab (center of bottom nav) — full-screen chat, same Gemini backend as Web.
+- Suggested prompts and markdown-style replies (**bold** card names).
+- History syncs with Web when logged in as the same user.
 
 ### Account & settings
 
@@ -144,7 +158,9 @@ For the best experience, set things up in this order:
 | CSV import | Yes | Yes |
 | Budgets & alerts | Yes | Yes |
 | Card wallet | Yes | Yes |
-| Rewards breakdown | Yes | Via dashboard stats |
+| Rewards breakdown | Yes | Yes (Dashboard → Rewards Earned) |
+| AI Assistant (Gemini) | Floating chat | Assistant tab |
+| Chat history sync | Yes (server, 7 days) | Yes (same account) |
 | Profile / settings | Yes | Yes |
 | Analytics page | Placeholder | N/A |
 
@@ -159,6 +175,8 @@ Data syncs through the same backend — changes on Web appear on Mobile after re
 | Empty dashboard | Add transactions and a budget; ensure you are logged in. |
 | No card recommendation | Add at least one **active** card to your wallet. |
 | Budget alert not showing | Confirm a budget exists for the current month and spending crossed a threshold. |
+| Assistant says API key / quota error | Set `GEMINI_API_KEY` in repo-root `.env`, use `GEMINI_MODEL=gemini-2.5-flash`, restart Django. See [installation.md §1.3](./installation.md#13-environment-variables-optional--ai-assistant). |
+| Chat history missing on other device | Log in with the same account; history is server-side (not only local storage). |
 | Mobile cannot log in | See [installation.md](./installation.md) — phone must reach the API (same Wi‑Fi, correct API URL). |
 | CSV import fails | Check column names, categories (e.g. `GROCERIES`, `DINING`), and UTF-8 encoding. |
 
@@ -169,4 +187,4 @@ For environment and API setup, always refer to [installation.md](./installation.
 ## Related docs
 
 - [installation.md](./installation.md) — Developer setup
-- Root `Documentation.md` — API and architecture notes (being migrated into `docs/`)
+- Root `Documentation.md` — API and architecture notes (see [documentation.md](./documentation.md))
