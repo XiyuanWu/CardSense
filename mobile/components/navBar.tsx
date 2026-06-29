@@ -49,6 +49,7 @@ export default function NavBar() {
     "importCSV",
     "transactionsDetail",
     "budget",
+    "rewards",
   ];
   const shouldHideNavBar = hiddenRoutes.some((route) => {
     const normalizedPathname = pathname.toLowerCase();

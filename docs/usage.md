@@ -158,7 +158,7 @@ For the best experience, set things up in this order:
 | CSV import | Yes | Yes |
 | Budgets & alerts | Yes | Yes |
 | Card wallet | Yes | Yes |
-| Rewards breakdown | Yes | Via dashboard stats |
+| Rewards breakdown | Yes | Yes (Dashboard → Rewards Earned) |
 | AI Assistant (Gemini) | Floating chat | Assistant tab |
 | Chat history sync | Yes (server, 7 days) | Yes (same account) |
 | Profile / settings | Yes | Yes |

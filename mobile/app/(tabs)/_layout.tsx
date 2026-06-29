@@ -83,6 +83,13 @@ export default function TabLayout() {
             href: null, // Hide from tab bar
           }}
         />
+        <Tabs.Screen
+          name="rewards"
+          options={{
+            title: "Rewards",
+            href: null,
+          }}
+        />
       </Tabs>
       <NavBar />
     </>

@@ -242,10 +242,18 @@ export default function DashboardPage() {
             </View>
 
             {/* Rewards Earned */}
-            <View style={[styles.card, styles.cardLeft]}>
+            <Pressable
+              style={[styles.card, styles.cardLeft]}
+              onPress={() => router.push("/(tabs)/rewards")}
+            >
               <Text style={styles.cardLabel}>Rewards Earned</Text>
-              <Text style={styles.cardValue}>${rewardsEarned.toFixed(2)}</Text>
-            </View>
+              <Text style={[styles.cardValue, styles.rewardsValue]}>
+                ${rewardsEarned.toFixed(2)}
+              </Text>
+              {rewardsEarned > 0 && (
+                <Text style={styles.cardLink}>View breakdown →</Text>
+              )}
+            </Pressable>
 
             {/* Active Budgets & Budget Alerts Row */}
             <View style={styles.rowContainer}>
@@ -404,6 +412,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#222222",
+  },
+  rewardsValue: {
+    color: "#16A34A",
+  },
+  cardLink: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#5E17EB",
+    marginTop: 6,
   },
   rowContainer: {
     flexDirection: "row",
