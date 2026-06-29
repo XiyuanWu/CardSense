@@ -24,15 +24,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="cards"
-          options={{
-            title: "Cards",
-          }}
-        />
-        <Tabs.Screen
           name="chat"
           options={{
             title: "Assistant",
+          }}
+        />
+        <Tabs.Screen
+          name="cards"
+          options={{
+            title: "Cards",
           }}
         />
         <Tabs.Screen

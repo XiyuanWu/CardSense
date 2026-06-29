@@ -21,14 +21,14 @@ const navItems: NavItem[] = [
     icon: "transactions",
   },
   {
-    name: "Cards",
-    route: "/cards",
-    icon: "cards",
-  },
-  {
     name: "Assistant",
     route: "/chat",
     icon: "chat",
+  },
+  {
+    name: "Cards",
+    route: "/cards",
+    icon: "cards",
   },
   {
     name: "Account",
@@ -87,13 +87,25 @@ export default function NavBar() {
         return (
           <Pressable
             key={item.route}
-            style={styles.navItem}
+            style={({ pressed }) => [
+              styles.navItem,
+              pressed && styles.navItemPressed,
+            ]}
             onPress={() => handlePress(item.route)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: active }}
           >
             <View style={styles.iconContainer}>
               <TabBarIcon name={item.icon} size={24} color={color} />
             </View>
-            <Text style={[styles.label, { color }]}>{item.name}</Text>
+            <Text
+              style={[styles.label, { color }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.8}
+            >
+              {item.name}
+            </Text>
           </Pressable>
         );
       })}
@@ -124,12 +136,20 @@ const styles = StyleSheet.create({
     height: 43,
     minWidth: 0,
   },
+  navItemPressed: {
+    opacity: 0.85,
+  },
   iconContainer: {
+    width: 24,
+    height: 24,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 3,
   },
   label: {
     fontSize: 9,
     fontWeight: "600",
     textAlign: "center",
+    alignSelf: "stretch",
   },
 });

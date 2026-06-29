@@ -124,13 +124,13 @@ export function ChatTabIcon({ size = 24, color = "#222222" }: TabIconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <Path
-        d="M4 6.5C4 5.67 4.67 5 5.5 5H18.5C19.33 5 20 5.67 20 6.5V14.5C20 15.33 19.33 16 18.5 16H8L4 19V6.5Z"
+        d="M5 7C5 6.17 5.67 5.5 6.5 5.5H17.5C18.33 5.5 19 6.17 19 7V14C19 14.83 18.33 15.5 17.5 15.5H9.5L6 18V7H5Z"
         stroke={color}
         strokeWidth="1.6"
         strokeLinejoin="round"
       />
       <Path
-        d="M8 9.5H16M8 12H13"
+        d="M8.5 9.5H15.5M8.5 12H12.5"
         stroke={color}
         strokeWidth="1.6"
         strokeLinecap="round"

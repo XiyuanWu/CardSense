@@ -19,8 +19,6 @@ import {
 } from "@/utils/chatHistoryStorage";
 import { ChatMessageText } from "@/components/chat/ChatMessageText";
 
-const NAV_BAR_HEIGHT = 63;
-
 const SUGGESTIONS = [
   "Which card is best for gas?",
   "What card for groceries?",
@@ -34,6 +32,7 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const prevMessageCount = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,13 +59,18 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    scrollRef.current?.scrollToEnd({ animated: true });
-  }, [messages, loading]);
-
-  useEffect(() => {
     if (!historyReady) return;
     saveChatHistory(messages);
   }, [messages, historyReady]);
+
+  useEffect(() => {
+    if (!historyReady || loading) return;
+    if (messages.length <= prevMessageCount.current) return;
+    prevMessageCount.current = messages.length;
+    requestAnimationFrame(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    });
+  }, [messages, loading, historyReady]);
 
   const sendMessage = async (text: string) => {
     const trimmed = text.trim();
@@ -84,130 +88,131 @@ export default function ChatPage() {
     if (response.success && response.data) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: response.data!.reply },
+        { role: "assistant", content: response.data.reply },
       ]);
+    } else if (!response.success) {
+      setError(response.error.message || "Could not get a reply.");
     } else {
-      setError(response.error?.message || "Could not get a reply.");
+      setError("Could not get a reply.");
     }
     setLoading(false);
   };
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
-      >
+      <View style={styles.content}>
         <View style={styles.header}>
+          <View style={styles.headerSpacer} />
           <Text style={styles.title}>Assistant</Text>
-          <Text style={styles.subtitle}>
-            Ask which card maximizes your rewards
-          </Text>
+          <View style={styles.headerSpacer} />
         </View>
 
-        <ScrollView
-          ref={scrollRef}
-          style={styles.messages}
-          contentContainerStyle={styles.messagesContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator
+        <KeyboardAvoidingView
+          style={styles.chatBody}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         >
-          {messages.map((msg, index) => (
-            <View
-              key={index}
-              style={[
-                styles.bubbleRow,
-                msg.role === "user" ? styles.bubbleRowUser : styles.bubbleRowBot,
-              ]}
-            >
+          <ScrollView
+            ref={scrollRef}
+            style={styles.messages}
+            contentContainerStyle={styles.messagesContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator
+          >
+            {messages.map((msg, index) => (
               <View
+                key={index}
                 style={[
-                  styles.bubble,
-                  msg.role === "user" ? styles.bubbleUser : styles.bubbleBot,
+                  styles.bubbleRow,
+                  msg.role === "user" ? styles.bubbleRowUser : styles.bubbleRowBot,
                 ]}
               >
-                {msg.role === "assistant" ? (
-                  <View>
-                    {msg.content.split("\n").map((line, lineIndex) => {
-                      const trimmed = line.trim();
-                      if (!trimmed) {
-                        return <View key={lineIndex} style={styles.lineSpacer} />;
-                      }
-                      return (
-                        <ChatMessageText
-                          key={lineIndex}
-                          text={trimmed}
-                          style={styles.bubbleText}
-                          boldStyle={styles.bubbleTextBold}
-                        />
-                      );
-                    })}
-                  </View>
-                ) : (
-                  <Text
-                    style={[styles.bubbleText, styles.bubbleTextUser]}
-                  >
-                    {msg.content}
-                  </Text>
-                )}
+                <View
+                  style={[
+                    styles.bubble,
+                    msg.role === "user" ? styles.bubbleUser : styles.bubbleBot,
+                  ]}
+                >
+                  {msg.role === "assistant" ? (
+                    <View>
+                      {msg.content.split("\n").map((line, lineIndex) => {
+                        const trimmed = line.trim();
+                        if (!trimmed) {
+                          return <View key={lineIndex} style={styles.lineSpacer} />;
+                        }
+                        return (
+                          <ChatMessageText
+                            key={lineIndex}
+                            text={trimmed}
+                            style={styles.bubbleText}
+                            boldStyle={styles.bubbleTextBold}
+                          />
+                        );
+                      })}
+                    </View>
+                  ) : (
+                    <Text style={[styles.bubbleText, styles.bubbleTextUser]}>
+                      {msg.content}
+                    </Text>
+                  )}
+                </View>
               </View>
-            </View>
-          ))}
-          {loading && (
-            <View style={styles.loadingRow}>
-              <ActivityIndicator color="#5E17EB" size="small" />
-              <Text style={styles.loadingText}>Thinking…</Text>
-            </View>
-          )}
-        </ScrollView>
-
-        <View style={styles.footer}>
-          {error ? <Text style={styles.error}>{error}</Text> : null}
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.suggestions}
-            contentContainerStyle={styles.suggestionsContent}
-          >
-            {SUGGESTIONS.map((s) => (
-              <Pressable
-                key={s}
-                style={styles.chip}
-                onPress={() => sendMessage(s)}
-                disabled={loading}
-              >
-                <Text style={styles.chipText}>{s}</Text>
-              </Pressable>
             ))}
+            {loading && (
+              <View style={styles.loadingRow}>
+                <ActivityIndicator color="#5E17EB" size="small" />
+                <Text style={styles.loadingText}>Thinking…</Text>
+              </View>
+            )}
           </ScrollView>
 
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.input}
-              value={input}
-              onChangeText={setInput}
-              placeholder="Ask about your cards…"
-              placeholderTextColor="#9CA3AF"
-              editable={!loading}
-              onSubmitEditing={() => sendMessage(input)}
-              returnKeyType="send"
-              multiline={false}
-            />
-            <Pressable
-              style={[
-                styles.sendBtn,
-                (!input.trim() || loading) && styles.sendBtnDisabled,
-              ]}
-              onPress={() => sendMessage(input)}
-              disabled={!input.trim() || loading}
+          <View style={styles.footer}>
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.suggestions}
+              contentContainerStyle={styles.suggestionsContent}
             >
-              <Text style={styles.sendBtnText}>Send</Text>
-            </Pressable>
+              {SUGGESTIONS.map((s) => (
+                <Pressable
+                  key={s}
+                  style={styles.chip}
+                  onPress={() => sendMessage(s)}
+                  disabled={loading}
+                >
+                  <Text style={styles.chipText}>{s}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                value={input}
+                onChangeText={setInput}
+                placeholder="Ask about your cards…"
+                placeholderTextColor="#9CA3AF"
+                editable={!loading}
+                onSubmitEditing={() => sendMessage(input)}
+                returnKeyType="send"
+                multiline={false}
+              />
+              <Pressable
+                style={[
+                  styles.sendBtn,
+                  (!input.trim() || loading) && styles.sendBtnDisabled,
+                ]}
+                onPress={() => sendMessage(input)}
+                disabled={!input.trim() || loading}
+              >
+                <Text style={styles.sendBtnText}>Send</Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -217,35 +222,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  flex: {
+  content: {
     flex: 1,
-    paddingBottom: NAV_BAR_HEIGHT,
+    paddingHorizontal: 35,
+    paddingTop: 20,
+    paddingBottom: 80,
   },
   header: {
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E6EAEF",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  headerSpacer: {
+    width: 40,
+    height: 40,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "700",
     color: "#222222",
+    textAlign: "center",
+    flex: 1,
   },
-  subtitle: {
-    fontSize: 13,
-    color: "#6B7280",
-    marginTop: 4,
+  chatBody: {
+    flex: 1,
   },
   messages: {
     flex: 1,
   },
   messagesContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    paddingBottom: 8,
-    flexGrow: 1,
+    paddingBottom: 12,
   },
   bubbleRow: {
     flexDirection: "row",
@@ -298,12 +305,11 @@ const styles = StyleSheet.create({
     borderTopColor: "#E6EAEF",
     backgroundColor: "#FFFFFF",
     paddingTop: 8,
-    paddingBottom: 8,
+    paddingBottom: 4,
   },
   error: {
     color: "#FF3B30",
     fontSize: 13,
-    paddingHorizontal: 16,
     marginBottom: 6,
   },
   suggestions: {
@@ -311,7 +317,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   suggestionsContent: {
-    paddingHorizontal: 16,
     gap: 8,
   },
   chip: {
@@ -328,7 +333,6 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
     gap: 8,
   },
   input: {

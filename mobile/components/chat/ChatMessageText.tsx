@@ -29,6 +29,7 @@ export function ChatMessageText({
   return (
     <Text style={style}>
       {parts.map((part, index) => {
+        if (!part) return null;
         if (part.startsWith("**") && part.endsWith("**")) {
           return (
             <Text key={index} style={[style, boldStyle, styles.bold]}>
@@ -36,11 +37,7 @@ export function ChatMessageText({
             </Text>
           );
         }
-        return (
-          <Text key={index} style={style}>
-            {part}
-          </Text>
-        );
+        return part;
       })}
     </Text>
   );
