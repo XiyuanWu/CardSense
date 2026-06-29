@@ -49,6 +49,16 @@ One Django backend serves both the **Web** (React) and **Mobile** (Expo React Na
 | [installation.md](./installation.md) | Developers — clone, install, run all three tiers |
 | [usage.md](./usage.md) | Users — sign up, navigate features |
 | **documentation.md** (this file) | Developers — architecture, models, API |
+| [preview.md](./preview.md) | UI screenshot checklist |
+| [README.md](./README.md) | Documentation index |
+
+### 1.4 Repository history & restructure
+
+CardSense started as a group project (Web only), then grew into a separate Mobile client built with Expo. Until this monorepo, each client lived in its own GitHub repository with a duplicated or shared backend layout. This repo restructures the whole project into one codebase and adds ongoing features to keep Web and Mobile in sync.
+
+- Old web repo (archived): [CardSense_Web](https://github.com/XiyuanWu/CardSense_Web)
+- Old mobile repo (archived): [CardSense_App](https://github.com/XiyuanWu/CardSense_App)
+
 
 ---
 
@@ -73,7 +83,7 @@ CardSense/
 └── docs/                # Project documentation
 ```
 
-Legacy folders (`CardSense_*-main/`) may remain from earlier zip imports; the active codebase lives at the root paths above.
+Legacy folders (`CardSense_*-main/`) may remain from earlier zip imports; the active codebase lives at the root paths above. See [§1.4 Repository history & restructure](#14-repository-history--restructure).
 
 ### 2.2 Backend Django apps
 
@@ -384,7 +394,7 @@ Run after migrations when the catalog is empty.
 
 ### 9.1 Completed (project baseline)
 
-- Monorepo: shared Django API + Web + Mobile
+- Monorepo: shared Django API + Web + Mobile (merged from archived CardSense_Web + CardSense_App repos)
 - Auth, transactions, budgets, cards, optimizer modules
 - Dashboard analytics endpoint
 - CSV import and card recommendation

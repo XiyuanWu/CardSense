@@ -11,7 +11,6 @@
 
 CardSense is a full-stack personal finance app that helps you track spending, set monthly budgets, manage credit cards, and choose the best card for each purchase category. One Django backend powers both the **Web** (React) and **Mobile** (Expo) clients.
 
----
 
 ## Introduction
 
@@ -21,7 +20,6 @@ Many cardholders pay more interest than they need to, or use the wrong card for 
 - **Rewards optimization** — log transactions, import CSV, and get card recommendations from your wallet
 - **Unified account** — sign in on Web or Mobile with the same data
 
----
 
 ## Features
 
@@ -34,7 +32,6 @@ Many cardholders pay more interest than they need to, or use the wrong card for 
 | **Optimizer** | Category selections and personalized recommendations |
 | **Analytics** | Dashboard metrics via the shared API |
 
----
 
 ## Quick start
 
@@ -76,8 +73,6 @@ npx expo start
 
 Use Expo Go, an Android emulator, or iOS Simulator. For a physical device, point the app at your machine’s LAN IP (see [installation.md](./docs/installation.md)).
 
----
-
 ## Tech stack
 
 | Layer | Stack |
@@ -86,7 +81,9 @@ Use Expo Go, an Android emulator, or iOS Simulator. For a physical device, point
 | **Web** | React, TypeScript, Create React App |
 | **Mobile** | Expo, React Native, Expo Router, TypeScript |
 
----
+## Design
+
+For mobile: **[CardSense Figma file](https://www.figma.com/design/K9IXjc8XGfccyxJeDOZu4M/CardSense?node-id=0-1)**
 
 ## Documentation
 
@@ -97,12 +94,6 @@ Full guides live under [`docs/`](./docs/). Start here instead of duplicating set
 | [docs/installation.md](./docs/installation.md) | Project layout, scripts, env vars, setup, troubleshooting |
 | [docs/usage.md](./docs/usage.md) | Sign up, Web & Mobile workflows, feature walkthrough |
 | [docs/documentation.md](./docs/documentation.md) | Architecture, data models, REST API |
-| [docs/preview.md](./docs/preview.md) | UI screenshots (Web & Mobile); add images under `docs/images/` |
+| [docs/preview.md](./docs/preview.md) | UI screenshots (Web & Mobile); |
 
-Legacy import reference: [Documentation.md](./Documentation.md) (superseded by `docs/documentation.md`).
-
----
-
-## License
-
-See repository license file if present. Otherwise treat as academic / portfolio project unless stated otherwise.
+**Repository history:** This repo combines the archived [CardSense_Web](https://github.com/XiyuanWu/CardSense_Web) and [CardSense_App](https://github.com/XiyuanWu/CardSense_App) projects into one monorepo. Details: [documentation.md §1.4](./docs/documentation.md#14-repository-history--restructure).
