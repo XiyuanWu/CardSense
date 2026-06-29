@@ -4,6 +4,8 @@ This guide covers local setup for **Developers** who want to run **CardSense** l
 
 > **Using the app (not building it)?** See [usage.md](./usage.md) for sign-up, features, and Web vs Mobile workflows.
 
+> **Monorepo:** This repo merges the former [CardSense_Web](https://github.com/XiyuanWu/CardSense_Web) and [CardSense_App](https://github.com/XiyuanWu/CardSense_App) projects (both archived). Clone **this** repository only — backend at the root, clients in `web/` and `mobile/`. Details: [documentation.md §1.4](./documentation.md#14-repository-history--restructure).
+
 ## Project layout
 
 ```
@@ -333,5 +335,6 @@ If the database is corrupted in dev, you can remove `db.sqlite3` and run `migrat
 
 - **[usage.md](./usage.md)** — How to use CardSense (Web & Mobile) after setup
 - **[documentation.md](./documentation.md)** — Architecture, data models, REST API
-- **[preview.md](./preview.md)** — UI screenshots template (Web & Mobile)
-- **[../README.md](../README.md)** — Project overview and quick start
+- **[preview.md](./preview.md)** — UI screenshot checklist (add files under `docs/images/`)
+- **[README.md](./README.md)** — Documentation index
+- **[../README.md](../README.md)** — Project overview, restructure history, Figma link
