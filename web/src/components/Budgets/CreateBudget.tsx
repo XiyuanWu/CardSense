@@ -56,7 +56,7 @@ const CreateBudget: React.FC = () => {
       });
 
       if (response.success) {
-        navigate('/budgets');
+        navigate('/dashboard');
       } else {
         setError(response.error?.message || 'Failed to create budget');
       }
