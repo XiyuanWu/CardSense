@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#E6EAEF",
     height: 63,
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
     paddingTop: 10,
   },
   navItem: {
@@ -122,12 +122,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 43,
+    minWidth: 0,
   },
   iconContainer: {
     marginBottom: 3,
   },
   label: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "600",
     textAlign: "center",
   },

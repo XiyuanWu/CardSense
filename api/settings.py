@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def _load_env_file() -> None:
-    """Load repo-root .env (OPENAI_API_KEY, etc.). Works with or without python-dotenv."""
+    """Load repo-root .env (GEMINI_API_KEY, etc.). Works with or without python-dotenv."""
     env_path = BASE_DIR / ".env"
     if not env_path.is_file():
         return
@@ -244,6 +244,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-# AI chat (OpenAI) — set OPENAI_API_KEY in .env at repo root
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
-OPENAI_CHAT_MODEL = os.environ.get('OPENAI_MODEL', 'gpt-4o-mini')
+# AI chat (Google Gemini) — set GEMINI_API_KEY in .env at repo root
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '').strip()
+GEMINI_CHAT_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash').strip() or 'gemini-2.5-flash'

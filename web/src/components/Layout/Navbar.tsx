@@ -8,7 +8,6 @@ const navItems = [
   { to: '/transactions', label: 'Transactions', match: (path: string) => path.startsWith('/transactions') },
   { to: '/budgets', label: 'Budgets', match: (path: string) => path.startsWith('/budgets') },
   { to: '/cards', label: 'Cards', match: (path: string) => path.startsWith('/cards') },
-  { to: '/chat', label: 'Assistant', match: (path: string) => path.startsWith('/chat') },
   { to: '/analytics', label: 'Analytics', match: (path: string) => path.startsWith('/analytics') },
 ];
 

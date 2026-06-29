@@ -45,7 +45,7 @@ python -m venv .venv
 # macOS/Linux:  source .venv/bin/activate
 
 pip install -r requirements.txt
-pip install djangorestframework django-cors-headers python-dotenv openai
+pip install djangorestframework django-cors-headers python-dotenv google-generativeai
 
 python manage.py migrate
 python manage.py runserver

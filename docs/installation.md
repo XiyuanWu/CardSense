@@ -77,24 +77,24 @@ source venv/bin/activate
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-pip install djangorestframework django-cors-headers python-dotenv openai
+pip install djangorestframework django-cors-headers python-dotenv google-generativeai
 ```
 
-> **Extra packages:** `djangorestframework` and `django-cors-headers` are required by the API but may be missing from a minimal `requirements.txt` install. `python-dotenv` loads the repo-root `.env` file; `openai` powers the **Assistant** chat (`/api/chat/`). Install them if you see `ModuleNotFoundError` for `rest_framework`, `corsheaders`, `dotenv`, or `openai`.
+> **Extra packages:** `djangorestframework` and `django-cors-headers` are required by the API but may be missing from a minimal `requirements.txt` install. `python-dotenv` loads the repo-root `.env` file; `google-generativeai` powers the **Assistant** chat (`/api/chat/`). Install them if you see `ModuleNotFoundError` for `rest_framework`, `corsheaders`, `dotenv`, or `google.generativeai`.
 
 ### 1.3 Environment variables (optional — AI Assistant)
 
-The **Assistant** feature (Web `/chat`, Mobile tab) uses OpenAI when configured. At the **repository root**:
+The **Assistant** feature uses **Google Gemini** when configured — **Web:** floating chat button (bottom-right); **Mobile:** **Assistant** tab in the bottom nav. Configure at the **repository root**:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and set your key (leave blank to use rule-based replies only):
+Edit `.env` and set your key ([Google AI Studio](https://aistudio.google.com/apikey)):
 
 ```env
-OPENAI_API_KEY=sk-your-key-here
-OPENAI_MODEL=gpt-4o-mini
+GEMINI_API_KEY=your-key-here
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 Restart `python manage.py runserver` after changing `.env`. The `.env` file is gitignored; never commit API keys.
@@ -346,19 +346,23 @@ python manage.py migrate
 
 If the database is corrupted in dev, you can remove `db.sqlite3` and run `migrate` again (this **deletes local data**).
 
-### `ModuleNotFoundError: dotenv` or `openai`
+### `ModuleNotFoundError: dotenv` or `google.generativeai`
 
 ```bash
-pip install python-dotenv openai
+pip install python-dotenv google-generativeai
 ```
 
 Restart the Django server. Full setup: [§1.2](#12-install-python-dependencies), [§1.3](#13-environment-variables-optional--ai-assistant).
 
-### AI chat not using OpenAI
+### AI chat errors
 
-- Confirm `OPENAI_API_KEY` is set in the repo-root `.env` (copy from `.env.example`).
-- Restart Django after editing `.env`.
-- Without a key, Assistant still answers using your wallet + optimizer rules (no LLM).
+Assistant requires a working **Gemini API key**. It does **not** guess answers offline.
+
+| `error_code` / log | Cause | Fix |
+|--------------------|--------|-----|
+| `no_api_key` | Missing `.env` or server not restarted | Set `GEMINI_API_KEY`, restart Django |
+| `gemini_quota` / HTTP 429 | Rate limit or quota exceeded | Wait or check [Google AI Studio](https://aistudio.google.com/) usage |
+| `gemini_invalid_key` | Wrong or revoked key | Create a new key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
 
 ---
 

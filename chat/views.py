@@ -19,7 +19,7 @@ class ChatView(APIView):
                 "data": {
                     "reply": result["reply"],
                     "hints": result.get("hints", []),
-                    "used_fallback": result.get("used_fallback", False),
+                    "error_code": result.get("error_code"),
                 },
             },
             status=status.HTTP_200_OK,

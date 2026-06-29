@@ -13,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useRef, useEffect } from "react";
 import { sendChatMessage, type ChatMessage } from "@/utils/api/chat";
 
+const NAV_BAR_HEIGHT = 63;
+
 const SUGGESTIONS = [
   "Which card is best for gas?",
   "What card for groceries?",
@@ -24,7 +26,7 @@ export default function ChatPage() {
     {
       role: "assistant",
       content:
-        "Hi! Ask which card to use for gas, groceries, travel, and more. I check your wallet and reward rules.",
+        "Hi! Ask about your cards, rewards, or saving money. Answers use your wallet via Gemini.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -67,12 +69,14 @@ export default function ChatPage() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 8 : 0}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
         <View style={styles.header}>
           <Text style={styles.title}>Assistant</Text>
-          <Text style={styles.subtitle}>Card rewards Q&amp;A from your wallet</Text>
+          <Text style={styles.subtitle}>
+            Ask which card maximizes your rewards
+          </Text>
         </View>
 
         <ScrollView
@@ -80,6 +84,7 @@ export default function ChatPage() {
           style={styles.messages}
           contentContainerStyle={styles.messagesContent}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator
         >
           {messages.map((msg, index) => (
             <View
@@ -114,44 +119,50 @@ export default function ChatPage() {
           )}
         </ScrollView>
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <View style={styles.footer}>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.suggestions}
-          contentContainerStyle={styles.suggestionsContent}
-        >
-          {SUGGESTIONS.map((s) => (
-            <Pressable
-              key={s}
-              style={styles.chip}
-              onPress={() => sendMessage(s)}
-              disabled={loading}
-            >
-              <Text style={styles.chipText}>{s}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-
-        <View style={styles.inputRow}>
-          <TextInput
-            style={styles.input}
-            value={input}
-            onChangeText={setInput}
-            placeholder="Ask about your cards…"
-            placeholderTextColor="#9CA3AF"
-            editable={!loading}
-            onSubmitEditing={() => sendMessage(input)}
-            returnKeyType="send"
-          />
-          <Pressable
-            style={[styles.sendBtn, (!input.trim() || loading) && styles.sendBtnDisabled]}
-            onPress={() => sendMessage(input)}
-            disabled={!input.trim() || loading}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.suggestions}
+            contentContainerStyle={styles.suggestionsContent}
           >
-            <Text style={styles.sendBtnText}>Send</Text>
-          </Pressable>
+            {SUGGESTIONS.map((s) => (
+              <Pressable
+                key={s}
+                style={styles.chip}
+                onPress={() => sendMessage(s)}
+                disabled={loading}
+              >
+                <Text style={styles.chipText}>{s}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          <View style={styles.inputRow}>
+            <TextInput
+              style={styles.input}
+              value={input}
+              onChangeText={setInput}
+              placeholder="Ask about your cards…"
+              placeholderTextColor="#9CA3AF"
+              editable={!loading}
+              onSubmitEditing={() => sendMessage(input)}
+              returnKeyType="send"
+              multiline={false}
+            />
+            <Pressable
+              style={[
+                styles.sendBtn,
+                (!input.trim() || loading) && styles.sendBtnDisabled,
+              ]}
+              onPress={() => sendMessage(input)}
+              disabled={!input.trim() || loading}
+            >
+              <Text style={styles.sendBtnText}>Send</Text>
+            </Pressable>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -165,12 +176,14 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
-    paddingBottom: 70,
+    paddingBottom: NAV_BAR_HEIGHT,
   },
   header: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E6EAEF",
   },
   title: {
     fontSize: 22,
@@ -184,14 +197,16 @@ const styles = StyleSheet.create({
   },
   messages: {
     flex: 1,
-    paddingHorizontal: 16,
   },
   messagesContent: {
-    paddingVertical: 8,
-    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingBottom: 8,
+    flexGrow: 1,
   },
   bubbleRow: {
     flexDirection: "row",
+    marginBottom: 10,
   },
   bubbleRowUser: {
     justifyContent: "flex-end",
@@ -200,7 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   bubble: {
-    maxWidth: "85%",
+    maxWidth: "88%",
     borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 10,
@@ -212,9 +227,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F4F6",
   },
   bubbleText: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#222222",
-    lineHeight: 20,
+    lineHeight: 22,
   },
   bubbleTextUser: {
     color: "#FFFFFF",
@@ -229,14 +244,21 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#6B7280",
   },
+  footer: {
+    borderTopWidth: 1,
+    borderTopColor: "#E6EAEF",
+    backgroundColor: "#FFFFFF",
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
   error: {
     color: "#FF3B30",
     fontSize: 13,
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
     marginBottom: 6,
   },
   suggestions: {
-    maxHeight: 44,
+    maxHeight: 40,
     marginBottom: 8,
   },
   suggestionsContent: {
@@ -259,7 +281,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     gap: 8,
-    paddingBottom: 8,
   },
   input: {
     flex: 1,
@@ -268,9 +289,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontSize: 14,
+    fontSize: 15,
     color: "#222222",
     backgroundColor: "#FAFAFA",
+    maxHeight: 100,
   },
   sendBtn: {
     backgroundColor: "#5E17EB",
