@@ -16,6 +16,7 @@ import {
   loadChatHistory,
   saveChatHistory,
 } from "@/utils/chatHistoryStorage";
+import { ChatMessageText } from "@/components/chat/ChatMessageText";
 
 const NAV_BAR_HEIGHT = 63;
 
@@ -102,14 +103,30 @@ export default function ChatPage() {
                   msg.role === "user" ? styles.bubbleUser : styles.bubbleBot,
                 ]}
               >
-                <Text
-                  style={[
-                    styles.bubbleText,
-                    msg.role === "user" && styles.bubbleTextUser,
-                  ]}
-                >
-                  {msg.content}
-                </Text>
+                {msg.role === "assistant" ? (
+                  <View>
+                    {msg.content.split("\n").map((line, lineIndex) => {
+                      const trimmed = line.trim();
+                      if (!trimmed) {
+                        return <View key={lineIndex} style={styles.lineSpacer} />;
+                      }
+                      return (
+                        <ChatMessageText
+                          key={lineIndex}
+                          text={trimmed}
+                          style={styles.bubbleText}
+                          boldStyle={styles.bubbleTextBold}
+                        />
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <Text
+                    style={[styles.bubbleText, styles.bubbleTextUser]}
+                  >
+                    {msg.content}
+                  </Text>
+                )}
               </View>
             </View>
           ))}
@@ -235,6 +252,12 @@ const styles = StyleSheet.create({
   },
   bubbleTextUser: {
     color: "#FFFFFF",
+  },
+  bubbleTextBold: {
+    fontWeight: "700",
+  },
+  lineSpacer: {
+    height: 6,
   },
   loadingRow: {
     flexDirection: "row",

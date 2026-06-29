@@ -1482,8 +1482,8 @@ textarea:focus {
   position: fixed;
   right: 1.5rem;
   bottom: 5.5rem;
-  width: min(380px, calc(100vw - 2rem));
-  height: min(520px, calc(100vh - 7rem));
+  width: min(460px, calc(100vw - 2rem));
+  height: min(680px, calc(100vh - 5.5rem));
   background: #ffffff;
   border-radius: 1rem;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
@@ -1594,11 +1594,14 @@ textarea:focus {
 }
 
 .chat-bubble {
-  max-width: 88%;
+  max-width: 92%;
   border-radius: 1rem;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.8125rem;
-  line-height: 1.45;
+  padding: 0.75rem 0.95rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.chat-bubble--user {
   white-space: pre-wrap;
 }
 
@@ -1677,4 +1680,41 @@ textarea:focus {
 .chat-fab-window .chat-panel {
   flex: 1;
   min-height: 0;
+}
+
+.chat-md {
+  margin: 0;
+}
+
+.chat-md-line {
+  margin: 0 0 0.5rem;
+}
+
+.chat-md-line:last-child {
+  margin-bottom: 0;
+}
+
+.chat-md-line--numbered,
+.chat-md-line--bullet {
+  padding-left: 0.15rem;
+}
+
+.chat-md-num {
+  font-weight: 700;
+  color: #5e17eb;
+}
+
+.chat-md-line--bullet::before {
+  content: "• ";
+  color: #5e17eb;
+  font-weight: 700;
+}
+
+.chat-md strong {
+  font-weight: 700;
+  color: inherit;
+}
+
+.chat-bubble--user .chat-md strong {
+  color: #ffffff;
 }

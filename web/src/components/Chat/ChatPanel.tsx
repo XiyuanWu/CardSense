@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { chatService, type ChatMessage } from '../../services/chat.service';
+import ChatMessageContent from './ChatMessageContent';
 import {
   loadChatHistory,
   saveChatHistory,
@@ -72,7 +73,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ compact = false }) => {
             <div
               className={`chat-bubble ${msg.role === 'user' ? 'chat-bubble--user' : 'chat-bubble--bot'}`}
             >
-              {msg.content}
+              {msg.role === 'assistant' ? (
+                <ChatMessageContent text={msg.content} />
+              ) : (
+                msg.content
+              )}
             </div>
           </div>
         ))}
