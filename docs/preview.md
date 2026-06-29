@@ -4,14 +4,6 @@ UI screenshots for **CardSense Web** and **Mobile**. Images live under [`docs/im
 
 ---
 
-## Overview
-
-![CardSense overview](./images/overview.png)
-
-*High-level view of the product — dashboard, cards, transactions, budgets, and the AI Assistant.*
-
----
-
 ## 1. Web app
 
 Base URL: [http://localhost:3000](http://localhost:3000) (local dev). Screenshots use a logged-in test account unless noted.
