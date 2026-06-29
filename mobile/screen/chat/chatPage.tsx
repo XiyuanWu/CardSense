@@ -11,8 +11,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useRef, useEffect } from "react";
-import { sendChatMessage, type ChatMessage } from "@/utils/api/chat";
+import { sendChatMessage, fetchChatHistory, type ChatMessage } from "@/utils/api/chat";
 import {
+  CHAT_WELCOME_MESSAGE,
   loadChatHistory,
   saveChatHistory,
 } from "@/utils/chatHistoryStorage";
@@ -28,18 +29,44 @@ const SUGGESTIONS = [
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadChatHistory());
+  const [historyReady, setHistoryReady] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
+    const syncHistory = async () => {
+      const response = await fetchChatHistory();
+      if (cancelled) return;
+
+      if (response.success && response.data) {
+        const remote = response.data.messages.filter(
+          (m) =>
+            (m.role === "user" || m.role === "assistant") &&
+            m.content.trim().length > 0,
+        );
+        setMessages(remote.length > 0 ? remote : [CHAT_WELCOME_MESSAGE]);
+      }
+      setHistoryReady(true);
+    };
+
+    syncHistory();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages, loading]);
 
   useEffect(() => {
+    if (!historyReady) return;
     saveChatHistory(messages);
-  }, [messages]);
+  }, [messages, historyReady]);
 
   const sendMessage = async (text: string) => {
     const trimmed = text.trim();
@@ -52,10 +79,7 @@ export default function ChatPage() {
     setError(null);
     setLoading(true);
 
-    const history = nextMessages.filter(
-      (m) => m.role === "user" || m.role === "assistant",
-    );
-    const response = await sendChatMessage(trimmed, history.slice(0, -1));
+    const response = await sendChatMessage(trimmed);
 
     if (response.success && response.data) {
       setMessages((prev) => [

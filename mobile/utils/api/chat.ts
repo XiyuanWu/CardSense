@@ -12,14 +12,37 @@ export interface ChatReplyData {
   used_fallback?: boolean;
 }
 
+export async function fetchChatHistory(): Promise<
+  ApiResponse<{ messages: ChatMessage[] }>
+> {
+  try {
+    const response = await apiRequest("/chat/history/");
+    const json = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        error: json?.error || { message: "Could not load chat history" },
+      };
+    }
+    return json;
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        message:
+          error instanceof Error ? error.message : "Network error. Try again.",
+      },
+    };
+  }
+}
+
 export async function sendChatMessage(
   message: string,
-  history: ChatMessage[] = [],
 ): Promise<ApiResponse<ChatReplyData>> {
   try {
     const response = await apiRequest("/chat/", {
       method: "POST",
-      body: JSON.stringify({ message, history }),
+      body: JSON.stringify({ message }),
     });
     const json = await response.json();
     if (!response.ok) {

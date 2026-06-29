@@ -20,8 +20,16 @@ export interface ChatReplyData {
   used_fallback?: boolean;
 }
 
+export interface ChatHistoryData {
+  messages: ChatMessage[];
+}
+
 export const chatService = {
-  async sendMessage(message: string, history: ChatMessage[] = []) {
-    return apiService.post<ChatReplyData>('/chat/', { message, history });
+  async fetchHistory() {
+    return apiService.get<ChatHistoryData>('/chat/history/');
+  },
+
+  async sendMessage(message: string) {
+    return apiService.post<ChatReplyData>('/chat/', { message });
   },
 };

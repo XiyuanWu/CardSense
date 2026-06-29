@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { chatService, type ChatMessage } from '../../services/chat.service';
 import ChatMessageContent from './ChatMessageContent';
 import {
+  CHAT_WELCOME_MESSAGE,
   loadChatHistory,
   saveChatHistory,
 } from '../../utils/chatHistoryStorage';
@@ -19,14 +20,40 @@ interface ChatPanelProps {
 
 const ChatPanel: React.FC<ChatPanelProps> = ({ compact = false }) => {
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadChatHistory());
+  const [historyReady, setHistoryReady] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
+    const syncHistory = async () => {
+      const response = await chatService.fetchHistory();
+      if (cancelled) return;
+
+      if (response.success && response.data) {
+        const remote = response.data.messages.filter(
+          (m) =>
+            (m.role === 'user' || m.role === 'assistant') &&
+            m.content.trim().length > 0,
+        );
+        setMessages(remote.length > 0 ? remote : [CHAT_WELCOME_MESSAGE]);
+      }
+      setHistoryReady(true);
+    };
+
+    syncHistory();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!historyReady) return;
     saveChatHistory(messages);
-  }, [messages]);
+  }, [messages, historyReady]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -43,8 +70,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ compact = false }) => {
     setError(null);
     setLoading(true);
 
-    const history = nextMessages.filter((m) => m.role === 'user' || m.role === 'assistant');
-    const response = await chatService.sendMessage(trimmed, history.slice(0, -1));
+    const response = await chatService.sendMessage(trimmed);
 
     if (response.success && response.data) {
       setMessages((prev) => [
