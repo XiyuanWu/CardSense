@@ -196,24 +196,31 @@ Hidden from the tab bar; reached via buttons or links on main screens.
 | `importCSV.tsx` | Bulk CSV import |
 | `addCards.tsx` | Add a card to wallet |
 | `budget.tsx` | Budget overview |
+| `rewardsPage.tsx` | Rewards breakdown |
 
 #### 2.8.1 Add transaction
 
-![Mobile add transaction](./images/mobile/2-7-1-add-transaction.png)
+![Mobile add transaction](./images/mobile/2-8-1-add-transaction.png)
 
 #### 2.8.2 Add card
 
-![Mobile add card](./images/mobile/2-7-2-add-card.png)
+![Mobile add card](./images/mobile/2-8-2-add-card.png)
 
 #### 2.8.3 Budget
 
-![Mobile budget](./images/mobile/2-7-3-budget.png)
+![Mobile budget](./images/mobile/2-8-3-budget.png)
 
 #### 2.8.4 Import CSV
 
-![Mobile import CSV](./images/mobile/2-7-4-import-csv.png)
+![Mobile import CSV](./images/mobile/2-8-4-import-csv.png)
 
-**Other Mobile screens (optional):** `signup`, `addBudget`, `transactionsDetail`, `chat` (same as Assistant tab).
+#### 2.8.5 Rewards breakdown
+
+**Route:** `/(tabs)/rewards` (from dashboard rewards card → “View breakdown →”)
+
+![Mobile rewards breakdown](./images/mobile/2-8-5-rewards.png)
+
+**Other Mobile screens (optional):** `signup`, `addBudget`, `transactionsDetail`.
 
 ---
 
