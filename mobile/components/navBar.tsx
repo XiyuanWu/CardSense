@@ -1,41 +1,34 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useRouter, usePathname } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { TabBarIcon, TabIconName } from "./icons/tabIcons";
 
 interface NavItem {
   name: string;
   route: string;
-  icon:
-    | keyof typeof MaterialCommunityIcons.glyphMap
-    | keyof typeof Ionicons.glyphMap;
-  iconSet: "MaterialCommunityIcons" | "Ionicons";
+  icon: TabIconName;
 }
 
 const navItems: NavItem[] = [
   {
     name: "Dashboard",
     route: "/dashboard",
-    icon: "view-dashboard-outline",
-    iconSet: "MaterialCommunityIcons",
+    icon: "dashboard",
   },
   {
-    name: "Transcation",
+    name: "Transaction",
     route: "/transactions",
-    icon: "swap-horizontal",
-    iconSet: "MaterialCommunityIcons",
+    icon: "transactions",
   },
   {
     name: "Cards",
     route: "/cards",
-    icon: "credit-card-outline",
-    iconSet: "MaterialCommunityIcons",
+    icon: "cards",
   },
   {
     name: "Account",
     route: "/settings",
-    icon: "person-outline",
-    iconSet: "Ionicons",
+    icon: "account",
   },
 ];
 
@@ -44,52 +37,38 @@ export default function NavBar() {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
 
-  // Hide nav bar on detail/add pages
   const hiddenRoutes = [
     "addCards",
     "addBudget",
     "addTransactions",
+    "importCSV",
     "transactionsDetail",
     "budget",
   ];
   const shouldHideNavBar = hiddenRoutes.some((route) => {
-    // Check if pathname includes the route (case-insensitive)
     const normalizedPathname = pathname.toLowerCase();
     const normalizedRoute = route.toLowerCase();
     return normalizedPathname.includes(normalizedRoute);
   });
 
-  // Don't render nav bar if it should be hidden
   if (shouldHideNavBar) {
     return null;
   }
 
   const isActive = (route: string) => {
-    // Normalize paths for comparison
-    const normalizedPathname = pathname.replace(/\/$/, ""); // Remove trailing slash
-    const normalizedRoute = route.replace(/\/$/, ""); // Remove trailing slash
-
-    // Extract the route name (last part after /)
+    const normalizedPathname = pathname.replace(/\/$/, "");
+    const normalizedRoute = route.replace(/\/$/, "");
     const routeName = normalizedRoute.split("/").pop() || "";
 
-    // Check multiple formats:
-    // 1. Exact match
     if (normalizedPathname === normalizedRoute) return true;
-
-    // 2. Match with (tabs) prefix
     if (normalizedPathname === `/(tabs)${normalizedRoute}`) return true;
-
-    // 3. Match if pathname ends with the route name
     if (normalizedPathname.endsWith(`/${routeName}`)) return true;
-
-    // 4. Match if pathname equals the route name (for root routes)
     if (normalizedPathname === routeName) return true;
 
     return false;
   };
 
   const handlePress = (route: string) => {
-    // Use the full route path with (tabs) prefix for navigation
     const fullRoute = route.startsWith("/(tabs)") ? route : `/(tabs)${route}`;
     router.push(fullRoute as any);
   };
@@ -98,7 +77,7 @@ export default function NavBar() {
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {navItems.map((item) => {
         const active = isActive(item.route);
-        const color = active ? "#5E17EB" : "#000000";
+        const color = active ? "#5E17EB" : "#222222";
 
         return (
           <Pressable
@@ -107,21 +86,7 @@ export default function NavBar() {
             onPress={() => handlePress(item.route)}
           >
             <View style={styles.iconContainer}>
-              {item.iconSet === "MaterialCommunityIcons" ? (
-                <MaterialCommunityIcons
-                  name={
-                    item.icon as keyof typeof MaterialCommunityIcons.glyphMap
-                  }
-                  size={24}
-                  color={color}
-                />
-              ) : (
-                <Ionicons
-                  name={item.icon as keyof typeof Ionicons.glyphMap}
-                  size={24}
-                  color={color}
-                />
-              )}
+              <TabBarIcon name={item.icon} size={24} color={color} />
             </View>
             <Text style={[styles.label, { color }]}>{item.name}</Text>
           </Pressable>

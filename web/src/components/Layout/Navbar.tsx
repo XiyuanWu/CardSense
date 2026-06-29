@@ -52,8 +52,8 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link to="/dashboard" className="flex items-center space-x-2">
-              <CardIcon size={32} className="text-blue-600" />
-              <span className="text-2xl font-bold text-blue-600">CardSense</span>
+              <CardIcon size={32} className="text-brand" />
+              <span className="text-2xl font-bold text-brand">CardSense</span>
             </Link>
 
             <div className="hidden md:flex ml-10 space-x-8">

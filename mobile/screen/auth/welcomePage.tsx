@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonFull from "../../components/button/buttonFull";
+import CardIcon from "../../components/icons/CardIcon";
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -11,11 +12,7 @@ export default function WelcomeScreen() {
       <View style={styles.content}>
         {/* Logo Section */}
         <View style={styles.logoContainer}>
-          <Image
-            source={require("../../assets/images/CardSense logo.png")}
-            style={styles.logo}
-            resizeMode="cover"
-          />
+          <CardIcon size={180} color="#5E17EB" />
           <View style={styles.textContainer}>
             <Text style={styles.titleText}>Maximize Your Credit Card</Text>
             <Text style={[styles.titleText, styles.titleTextPurple]}>
@@ -62,16 +59,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 10,
-  },
-  logo: {
-    width: 500,
-    height: 300,
-    maxWidth: "100%",
-    marginBottom: -20,
+    gap: 8,
   },
   textContainer: {
     alignItems: "center",
-    marginTop: -20,
+    marginTop: 16,
   },
   titleText: {
     fontSize: 20,

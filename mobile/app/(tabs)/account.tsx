@@ -1,1 +1,1 @@
-export { default } from "../../screen/account/accountPage";
+export { default } from "../../screen/settings/settingsPage";
