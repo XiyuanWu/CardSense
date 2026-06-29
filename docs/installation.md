@@ -77,12 +77,29 @@ source venv/bin/activate
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-pip install djangorestframework
+pip install djangorestframework django-cors-headers python-dotenv openai
 ```
 
-> `djangorestframework` is required by the API but may not be listed in `requirements.txt`. Install it if you see `ModuleNotFoundError: No module named 'rest_framework'`.
+> **Extra packages:** `djangorestframework` and `django-cors-headers` are required by the API but may be missing from a minimal `requirements.txt` install. `python-dotenv` loads the repo-root `.env` file; `openai` powers the **Assistant** chat (`/api/chat/`). Install them if you see `ModuleNotFoundError` for `rest_framework`, `corsheaders`, `dotenv`, or `openai`.
 
-### 1.3 Apply database migrations
+### 1.3 Environment variables (optional — AI Assistant)
+
+The **Assistant** feature (Web `/chat`, Mobile tab) uses OpenAI when configured. At the **repository root**:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set your key (leave blank to use rule-based replies only):
+
+```env
+OPENAI_API_KEY=sk-your-key-here
+OPENAI_MODEL=gpt-4o-mini
+```
+
+Restart `python manage.py runserver` after changing `.env`. The `.env` file is gitignored; never commit API keys.
+
+### 1.4 Apply database migrations
 
 ```bash
 python manage.py migrate
@@ -94,7 +111,7 @@ On Windows you can also run:
 .\migrate.bat
 ```
 
-### 1.4 Start the API server
+### 1.5 Start the API server
 
 ```bash
 python manage.py runserver
@@ -107,7 +124,7 @@ The API should be available at:
 
 Leave this terminal running while using Web or Mobile.
 
-### 1.5 Django admin (optional)
+### 1.6 Django admin (optional)
 
 Use the Django admin site to manage users, cards, budgets, and other data directly.
 
@@ -328,6 +345,20 @@ python manage.py migrate
 ```
 
 If the database is corrupted in dev, you can remove `db.sqlite3` and run `migrate` again (this **deletes local data**).
+
+### `ModuleNotFoundError: dotenv` or `openai`
+
+```bash
+pip install python-dotenv openai
+```
+
+Restart the Django server. Full setup: [§1.2](#12-install-python-dependencies), [§1.3](#13-environment-variables-optional--ai-assistant).
+
+### AI chat not using OpenAI
+
+- Confirm `OPENAI_API_KEY` is set in the repo-root `.env` (copy from `.env.example`).
+- Restart Django after editing `.env`.
+- Without a key, Assistant still answers using your wallet + optimizer rules (no LLM).
 
 ---
 

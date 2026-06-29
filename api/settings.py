@@ -10,10 +10,35 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def _load_env_file() -> None:
+    """Load repo-root .env (OPENAI_API_KEY, etc.). Works with or without python-dotenv."""
+    env_path = BASE_DIR / ".env"
+    if not env_path.is_file():
+        return
+    try:
+        from dotenv import load_dotenv
+
+        load_dotenv(env_path)
+        return
+    except ImportError:
+        pass
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key, value = key.strip(), value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+_load_env_file()
 
 
 # Quick-start development settings - unsuitable for production
@@ -38,6 +63,7 @@ INSTALLED_APPS = [
     'budgets',
     'cards',
     'optimizer',
+    'chat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -217,3 +243,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# AI chat (OpenAI) — set OPENAI_API_KEY in .env at repo root
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
+OPENAI_CHAT_MODEL = os.environ.get('OPENAI_MODEL', 'gpt-4o-mini')

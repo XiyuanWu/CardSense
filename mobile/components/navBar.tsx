@@ -26,6 +26,11 @@ const navItems: NavItem[] = [
     icon: "cards",
   },
   {
+    name: "Assistant",
+    route: "/chat",
+    icon: "chat",
+  },
+  {
     name: "Account",
     route: "/settings",
     icon: "account",

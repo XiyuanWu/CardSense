@@ -120,7 +120,26 @@ export function AccountTabIcon({ size = 24, color = "#222222" }: TabIconProps) {
   );
 }
 
-export type TabIconName = "dashboard" | "transactions" | "cards" | "account";
+export function ChatTabIcon({ size = 24, color = "#222222" }: TabIconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M4 6.5C4 5.67 4.67 5 5.5 5H18.5C19.33 5 20 5.67 20 6.5V14.5C20 15.33 19.33 16 18.5 16H8L4 19V6.5Z"
+        stroke={color}
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M8 9.5H16M8 12H13"
+        stroke={color}
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </Svg>
+  );
+}
+
+export type TabIconName = "dashboard" | "transactions" | "cards" | "chat" | "account";
 
 export function TabBarIcon({
   name,
@@ -134,6 +153,8 @@ export function TabBarIcon({
       return <TransactionsTabIcon size={size} color={color} />;
     case "cards":
       return <CardsTabIcon size={size} color={color} />;
+    case "chat":
+      return <ChatTabIcon size={size} color={color} />;
     case "account":
       return <AccountTabIcon size={size} color={color} />;
     default:

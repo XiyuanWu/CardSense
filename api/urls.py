@@ -26,5 +26,6 @@ urlpatterns = [
     path('api/budgets/', include('budgets.urls')),
     path('api/cards/', include('cards.urls')),
     path('api/optimizer/', include('optimizer.urls')),
+    path('api/chat/', include('chat.urls')),
     path('api/analytics/dashboard/', DashboardView.as_view(), name='analytics-dashboard'),
 ]

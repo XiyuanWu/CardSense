@@ -12,6 +12,7 @@ import CreateBudget from './components/Budgets/CreateBudget';
 import BudgetList from './components/Budgets/BudgetList';
 import BudgetAlerts from './components/Budgets/BudgetAlerts';
 import CardManagement from './components/Cards/CardManagement';
+import ChatAssistant from './components/Chat/ChatAssistant';
 import RewardsBreakdown from './components/Rewards/RewardsBreakdown';
 import Profile from './components/Profile/Profile';
 import Settings from './components/Profile/Settings';
@@ -119,6 +120,15 @@ const App: React.FC = () => {
           element={
             <PrivateRoute>
               <Settings />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <ChatAssistant />
             </PrivateRoute>
           }
         />

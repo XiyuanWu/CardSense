@@ -30,6 +30,12 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="chat"
+          options={{
+            title: "Assistant",
+          }}
+        />
+        <Tabs.Screen
           name="settings"
           options={{
             title: "Settings",
