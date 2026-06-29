@@ -1493,6 +1493,12 @@ textarea:focus {
   z-index: 1001;
 }
 
+.chat-fab-window--closed {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+}
+
 .chat-fab-header {
   display: flex;
   align-items: center;

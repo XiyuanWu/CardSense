@@ -1,5 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { chatService, type ChatMessage } from '../../services/chat.service';
+import {
+  loadChatHistory,
+  saveChatHistory,
+} from '../../utils/chatHistoryStorage';
 
 const SUGGESTIONS = [
   'Best card for gas?',
@@ -13,17 +17,15 @@ interface ChatPanelProps {
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({ compact = false }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: 'assistant',
-      content:
-        'Hi! Ask about your cards, rewards, or how to save money. I use your wallet data via Gemini — general questions welcome.',
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadChatHistory());
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    saveChatHistory(messages);
+  }, [messages]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });

@@ -12,6 +12,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useRef, useEffect } from "react";
 import { sendChatMessage, type ChatMessage } from "@/utils/api/chat";
+import {
+  loadChatHistory,
+  saveChatHistory,
+} from "@/utils/chatHistoryStorage";
 
 const NAV_BAR_HEIGHT = 63;
 
@@ -22,13 +26,7 @@ const SUGGESTIONS = [
 ];
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: "assistant",
-      content:
-        "Hi! Ask about your cards, rewards, or saving money. Answers use your wallet via Gemini.",
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadChatHistory());
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +35,10 @@ export default function ChatPage() {
   useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages, loading]);
+
+  useEffect(() => {
+    saveChatHistory(messages);
+  }, [messages]);
 
   const sendMessage = async (text: string) => {
     const trimmed = text.trim();

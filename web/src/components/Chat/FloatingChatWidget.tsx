@@ -7,32 +7,36 @@ const FloatingChatWidget: React.FC = () => {
 
   return (
     <div className="chat-fab-root" aria-live="polite">
-      {open && (
-        <>
+      <div
+        className={`chat-fab-window ${open ? '' : 'chat-fab-window--closed'}`}
+        role="dialog"
+        aria-label="CardSense Assistant"
+        aria-hidden={!open}
+      >
+        <div className="chat-fab-header">
+          <div className="chat-fab-header-title">
+            <CardIcon size={22} color="#5E17EB" />
+            <span>Assistant</span>
+          </div>
           <button
             type="button"
-            className="chat-fab-backdrop"
-            aria-label="Close assistant"
+            className="chat-fab-close"
             onClick={() => setOpen(false)}
-          />
-          <div className="chat-fab-window" role="dialog" aria-label="CardSense Assistant">
-            <div className="chat-fab-header">
-              <div className="chat-fab-header-title">
-                <CardIcon size={22} color="#5E17EB" />
-                <span>Assistant</span>
-              </div>
-              <button
-                type="button"
-                className="chat-fab-close"
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-            <ChatPanel compact />
-          </div>
-        </>
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <ChatPanel compact />
+      </div>
+
+      {open && (
+        <button
+          type="button"
+          className="chat-fab-backdrop"
+          aria-label="Close assistant"
+          onClick={() => setOpen(false)}
+        />
       )}
 
       <button
