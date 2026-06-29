@@ -50,7 +50,7 @@ One Django backend serves both the **Web** (React) and **Mobile** (Expo React Na
 | [installation.md](./installation.md) | Developers — clone, install, run all three tiers |
 | [usage.md](./usage.md) | Users — sign up, navigate features |
 | **documentation.md** (this file) | Developers — architecture, models, API |
-| [preview.md](./preview.md) | UI screenshot checklist |
+| [preview.md](./preview.md) | UI screenshots (Web & Mobile) |
 | [README.md](./README.md) | Documentation index |
 
 ### 1.4 Repository history & restructure

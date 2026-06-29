@@ -1,30 +1,26 @@
 # Preview
 
-UI screenshots for **CardSense Web** and **Mobile**. Replace the image paths below with your own captures.
-
-> **Setup:** Save files under [`docs/images/`](./images/). Suggested folders: `web/`, `mobile/`. PNG or JPG; width ~1200px for web, device resolution for mobile.
+UI screenshots for **CardSense Web** and **Mobile**. Images live under [`docs/images/`](./images/) in `web/` and `mobile/`.
 
 ---
 
-## How to capture
+## Overview
 
-| Client | Base URL | Notes |
-|--------|----------|--------|
-| **Web** | `http://localhost:3000` | Use a logged-in test account for dashboard and tabs |
-| **Mobile** | Expo Go / simulator | Backend must be running; see [installation.md](./installation.md) |
+![CardSense overview](./images/overview.png)
 
-**Naming:** Match section numbers when possible, e.g. `web/1-4-dashboard.png`, `mobile/2-3-dashboard.png`.
+*High-level view of the product — dashboard, cards, transactions, budgets, and the AI Assistant.*
 
 ---
 
 ## 1. Web app
 
-### 1.1 Landing page
+Base URL: [http://localhost:3000](http://localhost:3000) (local dev). Screenshots use a logged-in test account unless noted.
+
+### 1.1 Landing
 
 **Route:** `/`
 
-<!-- Replace src with your screenshot -->
-![Web landing page](./images/web/1-1-landing.png)
+![Web landing](./images/web/landing.png)
 
 *Public home page before sign-in.*
 
@@ -34,197 +30,132 @@ UI screenshots for **CardSense Web** and **Mobile**. Replace the image paths bel
 
 **Route:** `/login`
 
-![Web login](./images/web/1-2-login.png)
+![Web login](./images/web/login.png)
 
 ---
 
-### 1.3 Register
-
-**Route:** `/register`
-
-![Web register](./images/web/1-3-register.png)
-
----
-
-### 1.4 Dashboard
+### 1.3 Dashboard
 
 **Route:** `/dashboard`  
 **Nav:** Dashboard · Transactions · Budgets · Cards · Analytics
 
-![Web dashboard](./images/web/1-4-dashboard.png)
+![Web dashboard](./images/web/dashboard.png)
 
-*Summary cards: spending, rewards, budgets (up to 3), alerts, recent transactions (up to 3), quick actions. Floating **Assistant** button (bottom-right).*
-
----
-
-### 1.9 Assistant (Web)
-
-**UI:** Floating chat widget on any authenticated page (not a top-nav route).
-
-![Web assistant chat](./images/web/1-9-assistant.png)
+*Month-to-date spending, rewards, budget status (up to 3), alerts, recent transactions (up to 3), and quick actions. Floating **Assistant** button (bottom-right).*
 
 ---
 
-### 1.5 Transactions
+### 1.4 Transactions
 
 **Route:** `/transactions`
 
-![Web transactions list](./images/web/1-5-transactions.png)
+![Web transactions](./images/web/transaction.png)
+
+*List view with category pills, optimization hints, and edit/delete actions.*
 
 ---
 
-### 1.6 Budgets
-
-**Route:** `/budgets`
-
-![Web budgets](./images/web/1-6-budgets.png)
-
----
-
-### 1.7 Cards
+### 1.5 Cards
 
 **Route:** `/cards`
 
-![Web card management](./images/web/1-7-cards.png)
+![Web cards](./images/web/cards.png)
+
+*Wallet and catalog — add cards, view reward rules.*
 
 ---
 
-### 1.8 Secondary pages (selected)
+### 1.6 Rewards breakdown
 
-These are opened from the dashboard, nav, or quick actions — not every sub-page is listed here.
+**Route:** `/rewards` (from dashboard rewards card)
 
-| Route | Page |
-|-------|------|
-| `/transactions/add` | Add transaction |
-| `/rewards` | Rewards breakdown |
-| `/budgets/alerts` | Budget alerts |
-| `/transactions/import` | CSV import |
+![Web rewards](./images/web/rewards.png)
 
-#### 1.8.1 Add transaction
+*Per-card and category reward summary for the current month.*
 
-**Route:** `/transactions/add`
+---
 
-![Web add transaction](./images/web/1-8-1-add-transaction.png)
+### 1.7 Assistant
 
-#### 1.8.2 Rewards breakdown
+**UI:** Floating chat widget on any authenticated page (not a top-nav route).
 
-**Route:** `/rewards` (linked from dashboard rewards card)
+![Web assistant](./images/web/assistants.png)
 
-![Web rewards breakdown](./images/web/1-8-2-rewards.png)
+*Gemini-powered Q&A — card picks, rewards tips, wallet-aware answers. History syncs with Mobile.*
 
-#### 1.8.3 Budget alerts
+---
 
-**Route:** `/budgets/alerts`
+### 1.8 Settings
 
-![Web budget alerts](./images/web/1-8-3-budget-alerts.png)
+**Route:** `/settings`
 
-#### 1.8.4 Import CSV
+![Web settings](./images/web/settings.png)
 
-**Route:** `/transactions/import`
-
-![Web CSV import](./images/web/1-8-4-csv-import.png)
-
-**Other Web routes (add screenshots manually if needed):** `/budgets/create`, `/profile`, `/settings`, `/analytics` (placeholder).
+*Profile, preferences, and account options.*
 
 ---
 
 ## 2. Mobile app
 
-### 2.1 Welcome
+Run via Expo Go or a simulator with the backend up — see [installation.md](./installation.md).
 
-**Screen:** Auth welcome / entry
+**Bottom nav (main tabs):** Dashboard · Transaction · **Assistant** · Cards · Account
 
-![Mobile welcome](./images/mobile/2-1-welcome.png)
-
----
-
-### 2.2 Login
-
-**Screen:** Log in
-
-![Mobile login](./images/mobile/2-2-login.png)
-
----
-
-### 2.3 Dashboard
-
-**Tab:** Dashboard — bottom nav: Dashboard · Transaction · **Assistant** · Cards · Account
-
-![Mobile dashboard](./images/mobile/2-3-dashboard.png)
-
----
-
-### 2.4 Transactions
-
-**Tab:** Transactions
-
-![Mobile transactions](./images/mobile/2-4-transactions.png)
-
----
-
-### 2.5 Assistant
-
-**Tab:** Assistant (center of bottom nav)
-
-![Mobile assistant](./images/mobile/2-5-assistant.png)
-
----
-
-### 2.6 Cards
-
-**Tab:** Cards
-
-![Mobile cards](./images/mobile/2-6-cards.png)
-
----
-
-### 2.7 Settings
-
-**Tab:** Account (bottom nav)
-
-![Mobile settings](./images/mobile/2-7-settings.png)
-
----
-
-### 2.8 Secondary screens (selected)
-
-Hidden from the tab bar; reached via buttons or links on main screens.
-
-| Screen file | Purpose |
-|-------------|---------|
-| `addTransactions.tsx` | Add a transaction |
-| `importCSV.tsx` | Bulk CSV import |
-| `addCards.tsx` | Add a card to wallet |
-| `budget.tsx` | Budget overview |
-| `rewardsPage.tsx` | Rewards breakdown |
-
-#### 2.8.1 Add transaction
-
-![Mobile add transaction](./images/mobile/2-8-1-add-transaction.png)
-
-#### 2.8.2 Add card
-
-![Mobile add card](./images/mobile/2-8-2-add-card.png)
-
-#### 2.8.3 Budget
-
-![Mobile budget](./images/mobile/2-8-3-budget.png)
-
-#### 2.8.4 Import CSV
-
-![Mobile import CSV](./images/mobile/2-8-4-import-csv.png)
-
-#### 2.8.5 Rewards breakdown
-
-**Route:** `/(tabs)/rewards` (from dashboard rewards card → “View breakdown →”)
-
-![Mobile rewards breakdown](./images/mobile/2-8-5-rewards.png)
-
-**Other Mobile screens (optional):** `signup`, `addBudget`, `transactionsDetail`.
-
----
+<table>
+<tr>
+<td width="50%" valign="top">
+<h4>2.1 Welcome</h4>
+<p><strong>Screen:</strong> Auth welcome / entry</p>
+<img src="./images/mobile/landing.png" alt="Mobile welcome" width="280" />
+</td>
+<td width="50%" valign="top">
+<h4>2.2 Login</h4>
+<p><strong>Screen:</strong> Log in</p>
+<img src="./images/mobile/login.png" alt="Mobile login" width="280" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h4>2.3 Dashboard</h4>
+<p><strong>Tab:</strong> Dashboard</p>
+<img src="./images/mobile/dashboard.png" alt="Mobile dashboard" width="280" />
+<p><em>Spending, rewards, budgets, recent transactions.</em></p>
+</td>
+<td width="50%" valign="top">
+<h4>2.4 Transactions</h4>
+<p><strong>Tab:</strong> Transactions</p>
+<img src="./images/mobile/transaction.png" alt="Mobile transactions" width="280" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h4>2.5 Assistant</h4>
+<p><strong>Tab:</strong> Assistant (center of bottom nav)</p>
+<img src="./images/mobile/assistants.png" alt="Mobile assistant" width="280" />
+<p><em>Shares chat history with Web on the same account.</em></p>
+</td>
+<td width="50%" valign="top">
+<h4>2.6 Cards</h4>
+<p><strong>Tab:</strong> Cards</p>
+<img src="./images/mobile/cards.png" alt="Mobile cards" width="280" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h4>2.7 Account / Settings</h4>
+<p><strong>Tab:</strong> Account (bottom nav)</p>
+<img src="./images/mobile/settings.png" alt="Mobile settings" width="280" />
+</td>
+<td width="50%" valign="top">
+<h4>2.8 Rewards breakdown</h4>
+<p><strong>Route:</strong> <code>/(tabs)/rewards</code> — dashboard → View breakdown →</p>
+<img src="./images/mobile/rewards.png" alt="Mobile rewards" width="280" />
+</td>
+</tr>
+</table>
 
 ## Related docs
 
 - [usage.md](./usage.md) — Feature walkthrough (text)
 - [installation.md](./installation.md) — Run Web & Mobile locally
+- [documentation.md](./documentation.md) — Architecture and API reference
